@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/SeriyBg/junit-easy-tools.svg?branch=master)](https://travis-ci.org/SeriyBg/junit-easy-tools)
+
 # junit-easy-tools
 Extensions for JUnit4
 
