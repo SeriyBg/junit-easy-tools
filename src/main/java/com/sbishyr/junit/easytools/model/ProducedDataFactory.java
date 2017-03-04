@@ -13,9 +13,9 @@ import java.util.function.*;
 /**
  * Created by Serge Bishyr
  */
-public class ProducedDataFactory {
+class ProducedDataFactory {
 
-    public Object[] getParams(TestClass testClass, FrameworkMethod method)
+    Object[] getParams(TestClass testClass, FrameworkMethod method)
             throws IllegalAccessException, InitializationError {
         List<FrameworkField> annotatedFields = testClass.getAnnotatedFields(DataProducer.class);
         Class<?>[] parameterTypes = method.getMethod().getParameterTypes();

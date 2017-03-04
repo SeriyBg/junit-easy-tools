@@ -1,6 +1,6 @@
 package com.sbishyr.junit.easytools.runner;
 
-import com.sbishyr.junit.easytools.model.ProducedDataFactory;
+import com.sbishyr.junit.easytools.model.ProducerVerifier;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -40,15 +40,14 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
         private final FrameworkMethod frameworkMethod;
         private final TestClass testClass;
 
-        public DataProducedStatement(FrameworkMethod frameworkMethod, TestClass testClass) {
+        DataProducedStatement(FrameworkMethod frameworkMethod, TestClass testClass) {
             this.frameworkMethod = frameworkMethod;
             this.testClass = testClass;
         }
 
         @Override
         public void evaluate() throws Throwable {
-            Object[] methodParams = new ProducedDataFactory().getParams(testClass, frameworkMethod);
-            new ProducerVerifier(testClass, frameworkMethod, methodParams).evaluate();
+            new ProducerVerifier(testClass, frameworkMethod).evaluate();
         }
     }
 }
