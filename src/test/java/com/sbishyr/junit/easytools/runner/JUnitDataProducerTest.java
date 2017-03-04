@@ -5,11 +5,10 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
-import org.junit.runner.notification.Failure;
 
-import java.util.List;
 import java.util.function.*;
 
+import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHasNoFailures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -79,26 +78,20 @@ public class JUnitDataProducerTest {
     public void shouldRunJunitTestMethod() throws Exception {
         Result result = JUnitCore.runClasses(JunitTestClass.class);
         assertThat(result.getRunCount()).isEqualTo(1);
-        List<Failure> failures = result.getFailures();
-        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
-                .isEmpty();
+        assertResultHasNoFailures(result);
     }
 
     @Test
     public void shouldRunWithInsertedProducedData() throws Exception {
         Result result = JUnitCore.runClasses(TestWithProducedData.class);
         assertThat(result.getRunCount()).isEqualTo(2);
-        List<Failure> failures = result.getFailures();
-        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
-                .isEmpty();
+        assertResultHasNoFailures(result);
     }
 
     @Test
     public void shouldSupplyPrimitiveValues() throws Exception {
         Result result = JUnitCore.runClasses(PrimitiveSuppliers.class);
         assertThat(result.getRunCount()).isEqualTo(4);
-        List<Failure> failures = result.getFailures();
-        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
-                .isEmpty();
+        assertResultHasNoFailures(result);
     }
 }
