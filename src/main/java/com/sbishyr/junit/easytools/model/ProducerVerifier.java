@@ -26,8 +26,8 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected void collectInitializationErrors(List<Throwable> errors) {
-        // Do nothing
+    protected void validateTestMethods(List<Throwable> errors) {
+        //Do nothing
     }
 
     public void evaluate() throws Throwable {

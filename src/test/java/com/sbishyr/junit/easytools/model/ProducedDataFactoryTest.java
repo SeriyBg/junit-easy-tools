@@ -1,8 +1,7 @@
 package com.sbishyr.junit.easytools.model;
 
-import com.sbishyr.junit.easytools.runner.JUnitDataProducer;
+import com.sbishyr.junit.easytools.runner.ProducedValue;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
@@ -18,17 +17,19 @@ import static org.assertj.core.api.Assertions.fail;
  */
 public class ProducedDataFactoryTest {
 
-    @RunWith(JUnitDataProducer.class)
     public static class OneIntSupplier {
         @DataProducer
         public static IntSupplier producer = () -> 42;
 
-        @Test public void a(int i) {
-            assertThat(i).isEqualTo(42);
+        public void a(int i) {
+            //Do nothing
+        }
+
+        public void b(String s) {
+            fail("Method should not run!");
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
     public static class TwoSuppliersDifferentType {
         @DataProducer
         public static Supplier<String> stringProducer = () -> "42";
@@ -36,18 +37,21 @@ public class ProducedDataFactoryTest {
         @DataProducer
         public static Supplier<Integer> integerProducer = () -> 42;
 
-        @Test public void a(Integer i, String s) {
-            assertThat(i).isEqualTo(42);
-            assertThat(s).isEqualTo("42");
+        public void a(Integer i, String s) {
+            //Do nothing
         }
     }
 
-    public static class NotInitializedCorrectly {
-        @DataProducer
-        public static Supplier<String> stringSupplier = () -> "string";
+    public static class NamedDataProducers {
 
-        public void a(int i) {
-            fail("Method should not run!");
+        @DataProducer(name = "first")
+        public static Supplier<String> firstProducer = () -> "42";
+
+        @DataProducer(name = "second")
+        public static Supplier<String> secondProducer = () -> "27";
+
+        public void a(@ProducedValue(producer = "second") String s) {
+            //Do nothing
         }
     }
 
@@ -72,15 +76,25 @@ public class ProducedDataFactoryTest {
 
     @Test
     public void shouldThrowInitializationErrorIfNoDataProducerOfTypeFound() throws Exception {
-        TestClass testClass = new TestClass(NotInitializedCorrectly.class);
+        TestClass testClass = new TestClass(OneIntSupplier.class);
         FrameworkMethod method = new FrameworkMethod(
-                testClass.getJavaClass().getMethod("a", Integer.TYPE));
+                testClass.getJavaClass().getMethod("b", String.class));
 
         try {
             new ProducedDataFactory().getParams(testClass, method);
             fail("InitializationError expected");
         } catch (InitializationError e) {
-            //Do nothing. Exception is expected!
+            //Do nothing. Exception is expected.
         }
+    }
+
+    @Test
+    public void shouldGetValueFromNamedDataProducer() throws Exception {
+        TestClass testClass = new TestClass(NamedDataProducers.class);
+        FrameworkMethod method = new FrameworkMethod(
+                testClass.getJavaClass().getMethod("a", String.class));
+
+        Object[] params = new ProducedDataFactory().getParams(testClass, method);
+        assertThat(params).isEqualTo(new Object[]{"27"});
     }
 }
