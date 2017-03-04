@@ -4,12 +4,14 @@ import com.sbishyr.junit.easytools.runner.JUnitDataProducer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
 
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Created by Serge Bishyr on 3/3/17.
@@ -40,6 +42,15 @@ public class ProducedDataFactoryTest {
         }
     }
 
+    public static class NotInitializedCorrectly {
+        @DataProducer
+        public static Supplier<String> stringSupplier = () -> "string";
+
+        public void a(int i) {
+            fail("Method should not run!");
+        }
+    }
+
     @Test
     public void shouldSupplyInt() throws Exception {
         TestClass testClass = new TestClass(OneIntSupplier.class);
@@ -57,5 +68,19 @@ public class ProducedDataFactoryTest {
 
         Object[] producedParams = new ProducedDataFactory().getParams(testClass, method);
         assertThat(producedParams).isEqualTo(new Object[]{42, "42"});
+    }
+
+    @Test
+    public void shouldThrowInitializationErrorIfNoDataProducerOfTypeFound() throws Exception {
+        TestClass testClass = new TestClass(NotInitializedCorrectly.class);
+        FrameworkMethod method = new FrameworkMethod(
+                testClass.getJavaClass().getMethod("a", Integer.TYPE));
+
+        try {
+            new ProducedDataFactory().getParams(testClass, method);
+            fail("InitializationError expected");
+        } catch (InitializationError e) {
+            //Do nothing. Exception is expected!
+        }
     }
 }

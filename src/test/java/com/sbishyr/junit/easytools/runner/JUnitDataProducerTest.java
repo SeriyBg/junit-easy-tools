@@ -5,9 +5,10 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
+import org.junit.runner.notification.Failure;
 
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.function.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,17 +39,66 @@ public class JUnitDataProducerTest {
         }
     }
 
+    @RunWith(JUnitDataProducer.class)
+    public static class PrimitiveSuppliers {
+
+        @DataProducer
+        public static LongSupplier longSupplier = () -> 42l;
+
+        @DataProducer
+        public static BooleanSupplier booleanSupplier = () -> true;
+
+        @DataProducer
+        public static IntSupplier intProducer = () -> 27;
+
+        @DataProducer
+        public static DoubleSupplier doubleSupplier = () -> 4.2;
+
+        @Test
+        public void a(long l) {
+            assertThat(l).isEqualTo(42l);
+        }
+
+        @Test
+        public void b(boolean b) {
+            assertThat(b).isTrue();
+        }
+
+        @Test
+        public void c(int i) {
+            assertThat(i).isEqualTo(27);
+        }
+
+        @Test
+        public void d(double d) {
+            assertThat(d).isEqualTo(4.2);
+        }
+    }
+
     @Test
     public void shouldRunJunitTestMethod() throws Exception {
         Result result = JUnitCore.runClasses(JunitTestClass.class);
         assertThat(result.getRunCount()).isEqualTo(1);
-        assertThat(result.wasSuccessful()).isTrue();
+        List<Failure> failures = result.getFailures();
+        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
+                .isEmpty();
     }
 
     @Test
     public void shouldRunWithInsertedProducedData() throws Exception {
         Result result = JUnitCore.runClasses(TestWithProducedData.class);
         assertThat(result.getRunCount()).isEqualTo(2);
-        assertThat(result.wasSuccessful()).isTrue();
+        List<Failure> failures = result.getFailures();
+        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
+                .isEmpty();
+    }
+
+    @Test
+    public void shouldSupplyPrimitiveValues() throws Exception {
+        Result result = JUnitCore.runClasses(PrimitiveSuppliers.class);
+        assertThat(result.getRunCount()).isEqualTo(4);
+        List<Failure> failures = result.getFailures();
+        assertThat(failures).as("Fail to run test. Failures detected: %s", failures)
+                .isEmpty();
     }
 }
