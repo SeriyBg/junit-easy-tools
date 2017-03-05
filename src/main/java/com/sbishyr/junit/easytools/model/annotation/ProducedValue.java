@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.runner;
+package com.sbishyr.junit.easytools.model.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

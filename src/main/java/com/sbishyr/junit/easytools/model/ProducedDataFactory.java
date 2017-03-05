@@ -1,6 +1,7 @@
 package com.sbishyr.junit.easytools.model;
 
-import com.sbishyr.junit.easytools.runner.ProducedValue;
+import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -47,6 +48,10 @@ class ProducedDataFactory {
         classToProducer.put(BooleanSupplier.class, s -> ((BooleanSupplier)s).getAsBoolean());
         classToProducer.put(DoubleSupplier.class, s -> ((DoubleSupplier)s).getAsDouble());
     }
+    private Object calculatePramValue(Class<?> type, FrameworkField annotatedField) throws IllegalAccessException {
+        return classToProducer.get(type).apply(annotatedField.get(null));
+    }
+
     private Object getParamValue(Parameter parameter, List<FrameworkField> fields)
             throws IllegalAccessException, InitializationError {
 
@@ -59,7 +64,7 @@ class ProducedDataFactory {
             Class<?> type = annotatedField.getField().getType();
             Class<?> aClass = primitiveSupplierToType.get(type);
             if (aClass != null && aClass.equals(parameter.getType())) {
-                return classToProducer.get(type).apply(annotatedField.get(null));
+                return calculatePramValue(type, annotatedField);
             } else {
                 Type genericType = annotatedField.getField().getGenericType();
                 if (genericType instanceof ParameterizedType) {
@@ -67,7 +72,7 @@ class ProducedDataFactory {
                     Type[] actualTypeArguments = parametrizedType.getActualTypeArguments();
                     Type actualTypeArgument = actualTypeArguments[0];
                     if (parameter.getType().equals(actualTypeArgument)) {
-                        return classToProducer.get(type).apply(annotatedField.get(null));
+                        return calculatePramValue(type, annotatedField);
                     }
                 }
             }

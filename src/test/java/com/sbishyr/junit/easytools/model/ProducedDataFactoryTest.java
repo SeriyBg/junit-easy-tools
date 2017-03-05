@@ -1,6 +1,7 @@
 package com.sbishyr.junit.easytools.model;
 
-import com.sbishyr.junit.easytools.runner.ProducedValue;
+import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;

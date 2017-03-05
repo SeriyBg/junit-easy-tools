@@ -1,5 +1,6 @@
 package com.sbishyr.junit.easytools.model;
 
+import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
