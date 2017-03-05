@@ -61,6 +61,13 @@ public class JUnitDataProducerComplexTest {
         public void a(@ProducedValue(producer = "usedSupplier") String s) {
             assertThat(s).isEqualTo("secondSupplier");
         }
+
+        @Test
+        public void b(@ProducedValue(producer = "firstSupplier") String s) {
+            assertThat(s).isEqualTo("firstSupplier");
+        }
+
+
     }
 
     @Test
@@ -73,7 +80,7 @@ public class JUnitDataProducerComplexTest {
     @Test
     public void shouldProvideValueFromNamedProducer() throws Exception {
         Result result = JUnitCore.runClasses(NamedDataProducer.class);
-        assertThat(result.getRunCount()).isEqualTo(1);
+        assertThat(result.getRunCount()).isEqualTo(2);
         assertResultHasNoFailures(result);
     }
 }
