@@ -1,5 +1,6 @@
 package com.sbishyr.junit.easytools.model;
 
+import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -26,8 +27,8 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
     }
 
     @Override
-    protected void collectInitializationErrors(List<Throwable> errors) {
-        // Do nothing
+    protected void validateTestMethods(List<Throwable> errors) {
+        //Do nothing
     }
 
     public void evaluate() throws Throwable {

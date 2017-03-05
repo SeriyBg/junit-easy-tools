@@ -1,8 +1,8 @@
 package com.sbishyr.junit.easytools.runner;
 
-import com.sbishyr.junit.easytools.model.DataProducer;
-import com.sbishyr.junit.easytools.model.ProducedValues;
-import com.sbishyr.junit.easytools.utils.ResultAssertions;
+import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -13,6 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHasNoFailures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -35,12 +36,7 @@ public class JUnitDataProducerComplexTest {
         }
 
         //The copy the providedValues as long as we expect each value one by one to be provided
-        private static final Queue<String> expectedValues = new LinkedList<>();
-        static {
-            expectedValues.add("firstString");
-            expectedValues.add("2String");
-            expectedValues.add("thirdOne");
-        }
+        private static final Queue<String> expectedValues = new LinkedList<>(providedValues);
 
         @DataProducer
         public static Supplier<String> stringSupplier = () -> providedValues.poll();
@@ -53,10 +49,39 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
+    @RunWith(JUnitDataProducer.class)
+    public static class NamedDataProducer {
+
+        @DataProducer
+        public static Supplier<String> firstSupplier = () -> "firstSupplier";
+
+        @DataProducer(name = "usedSupplier")
+        public static Supplier<String> secondSupplier = () -> "secondSupplier";
+
+        @Test
+        public void a(@ProducedValue(producer = "usedSupplier") String s) {
+            assertThat(s).isEqualTo("secondSupplier");
+        }
+
+        @Test
+        public void b(@ProducedValue(producer = "firstSupplier") String s) {
+            assertThat(s).isEqualTo("firstSupplier");
+        }
+
+
+    }
+
     @Test
     public void shouldSupportRepeatableTestsRun() throws Exception {
         Result result = JUnitCore.runClasses(ComplexProducerClass.class);
         assertThat(ComplexProducerClass.count.get()).isEqualTo(3);
-        ResultAssertions.assertResultHasNoFailures(result);
+        assertResultHasNoFailures(result);
+    }
+
+    @Test
+    public void shouldProvideValueFromNamedProducer() throws Exception {
+        Result result = JUnitCore.runClasses(NamedDataProducer.class);
+        assertThat(result.getRunCount()).isEqualTo(2);
+        assertResultHasNoFailures(result);
     }
 }

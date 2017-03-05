@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.model;
+package com.sbishyr.junit.easytools.model.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -7,5 +7,6 @@ import java.lang.annotation.RetentionPolicy;
  * Created by Serge Bishyr
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DataProducer {
+public @interface ProducedValue {
+    String producer();
 }
