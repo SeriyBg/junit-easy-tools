@@ -9,12 +9,44 @@ Extensions for JUnit4
 Provides lazy calculated parameters inserted to test method.
 ### Example
 
+#### Simple example
+The value of `stringProducer` will be calculated and injected to the `testMethod(String string)`
 ```java
 @DataProducer
 public static Supplier<String> stringProducer = () -> RandomStringProvider.get();
 
 @Test
 public void testMethod(String string) {
+   ...
+}
+```
+
+#### Example with iterations
+The `testMethod(String string)` will run three times (`@ProducedValues(iterations = 3)`).
+Each run the value of `stringProducer` will be recalculated, so the new value will be provided. 
+```java
+@DataProducer
+public static Supplier<String> stringProducer = () -> RandomStringProvider.get();
+
+@Test
+@ProducedValues(iterations = 3)
+public void testMethod(String string) {
+   ...
+}
+```
+
+#### Named @DataProducer
+To `testMethod(@ProducedValue(producer = "calculated") String string)` will be injected values from `calculatedProducer`.
+If no `name` is specified for `@DataProducer`, the field name will be considered as `@DataProducer` name.
+```java
+@DataProducer
+public static Supplier<String> randomProducer = () -> RandomStringProvider.get();
+
+@DataProducer(name = "calculated")
+public static Supplier<String> calculatedProducer = () -> CalculatedStringProvider.get();
+
+@Test
+public void testMethod(@ProducedValue(producer = "calculated") String string) {
    ...
 }
 ```
