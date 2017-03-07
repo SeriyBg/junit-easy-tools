@@ -3,6 +3,7 @@ package com.sbishyr.junit.easytools.runner;
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -38,6 +39,11 @@ public class JUnitDataProducerComplexTest {
         //The copy the providedValues as long as we expect each value one by one to be provided
         private static final Queue<String> expectedValues = new LinkedList<>(providedValues);
 
+        @BeforeClass
+        public static void setUpCounter() {
+            count.set(0);
+        }
+
         @DataProducer
         public static Supplier<String> stringSupplier = () -> providedValues.poll();
 
@@ -45,7 +51,7 @@ public class JUnitDataProducerComplexTest {
         @ProducedValues(iterations = 3)
         public void a(String s) {
             assertThat(s).isEqualTo(expectedValues.poll());
-            count.getAndIncrement();
+            count.incrementAndGet();
         }
     }
 
@@ -68,13 +74,12 @@ public class JUnitDataProducerComplexTest {
             assertThat(s).isEqualTo("firstSupplier");
         }
 
-
     }
 
     @Test
     public void shouldSupportRepeatableTestsRun() throws Exception {
         Result result = JUnitCore.runClasses(ComplexProducerClass.class);
-        assertThat(ComplexProducerClass.count.get()).isEqualTo(3);
+        assertThat(ComplexProducerClass.count.intValue()).isEqualTo(3);
         assertResultHasNoFailures(result);
     }
 
