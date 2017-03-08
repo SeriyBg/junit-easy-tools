@@ -11,6 +11,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
@@ -56,12 +57,22 @@ public class ProducedDataFactoryTest {
         }
     }
 
+    public static class NotSupportedDataProducerType {
+        @DataProducer
+        public static String strinSupplier = "notSupported";
+
+        public void a(String s) {
+            //Do nothing
+        }
+    }
+
     @Test
     public void shouldSupplyInt() throws Exception {
         TestClass testClass = new TestClass(OneIntSupplier.class);
         FrameworkMethod method = new FrameworkMethod(testClass.getJavaClass().getMethod("a", Integer.TYPE));
 
-        Object[] producedParams = new ProducedDataFactory().getParams(testClass, method);
+        Object[] producedParams =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
         assertThat(producedParams).isEqualTo(new Object[]{42});
     }
 
@@ -71,7 +82,8 @@ public class ProducedDataFactoryTest {
         FrameworkMethod method = new FrameworkMethod(
                 testClass.getJavaClass().getMethod("a", Integer.class, String.class));
 
-        Object[] producedParams = new ProducedDataFactory().getParams(testClass, method);
+        Object[] producedParams =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
         assertThat(producedParams).isEqualTo(new Object[]{42, "42"});
     }
 
@@ -81,12 +93,9 @@ public class ProducedDataFactoryTest {
         FrameworkMethod method = new FrameworkMethod(
                 testClass.getJavaClass().getMethod("b", String.class));
 
-        try {
-            new ProducedDataFactory().getParams(testClass, method);
-            fail("InitializationError expected");
-        } catch (InitializationError e) {
-            //Do nothing. Exception is expected.
-        }
+        assertThatExceptionOfType(InitializationError.class)
+                .isThrownBy(() ->
+                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams());
     }
 
     @Test
@@ -95,7 +104,20 @@ public class ProducedDataFactoryTest {
         FrameworkMethod method = new FrameworkMethod(
                 testClass.getJavaClass().getMethod("a", String.class));
 
-        Object[] params = new ProducedDataFactory().getParams(testClass, method);
+        Object[] params =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
+
         assertThat(params).isEqualTo(new Object[]{"27"});
+    }
+
+    @Test
+    public void shouldGetExceptionForNotSupportedSupplierType() throws Exception {
+        TestClass testClass = new TestClass(NotSupportedDataProducerType.class);
+        FrameworkMethod method = new FrameworkMethod(
+                testClass.getJavaClass().getMethod("a", String.class));
+
+        assertThatExceptionOfType(InitializationError.class)
+                .isThrownBy(() ->
+                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams());
     }
 }

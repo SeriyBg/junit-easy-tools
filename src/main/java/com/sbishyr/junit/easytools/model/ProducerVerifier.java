@@ -1,5 +1,6 @@
 package com.sbishyr.junit.easytools.model;
 
+import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -57,7 +58,8 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
         }
 
         private void invokeMethodExplosively() throws Throwable {
-            Object[] args = new ProducedDataFactory().getParams(getTestClass(), method);
+            Object[] args = new ProducedDataFactory(method, getTestClass().getAnnotatedFields(DataProducer.class))
+                                .getParams();
             method.invokeExplosively(test, args);
         }
     }
