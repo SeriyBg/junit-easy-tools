@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Custom wrapper to provide quick assertions on {@link Result}
- * Created by Serge Bishyr
+ * @author by Serge Bishyr
  */
 public class ResultAssertions extends Assertions {
 

@@ -11,7 +11,7 @@ import org.junit.runners.model.TestClass;
 import java.util.List;
 
 /**
- * Created by Serge Bishyr
+ * @author by Serge Bishyr
  */
 public class JUnitDataProducer extends BlockJUnit4ClassRunner {
 

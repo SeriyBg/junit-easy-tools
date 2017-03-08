@@ -10,11 +10,13 @@ import org.junit.runners.model.TestClass;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.*;
 
 /**
- * Created by Serge Bishyr
+ * @author by Serge Bishyr
  */
 class ProducedDataFactory {
 
@@ -87,9 +89,6 @@ class ProducedDataFactory {
         }
         DataProducer annotation = annotatedField.getAnnotation(DataProducer.class);
         String dataProducerName = annotation.name().isEmpty() ? annotatedField.getName() : annotation.name();
-        if (paramAnnotation.producer().equals(dataProducerName)) {
-            return true;
-        }
-        return false;
+        return paramAnnotation.producer().equals(dataProducerName);
     }
 }

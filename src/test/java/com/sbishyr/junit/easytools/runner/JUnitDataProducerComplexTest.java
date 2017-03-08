@@ -17,7 +17,7 @@ import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHas
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by Serge Bishyr on 3/4/17.
+ * @author by Serge Bishyr
  */
 public class JUnitDataProducerComplexTest {
 
@@ -39,7 +39,7 @@ public class JUnitDataProducerComplexTest {
         private static final Queue<String> expectedValues = new LinkedList<>(providedValues);
 
         @DataProducer
-        public static Supplier<String> stringSupplier = () -> providedValues.poll();
+        public static Supplier<String> stringSupplier = providedValues::poll;
 
         @Test
         @ProducedValues(iterations = 3)
@@ -67,8 +67,6 @@ public class JUnitDataProducerComplexTest {
         public void b(@ProducedValue(producer = "firstSupplier") String s) {
             assertThat(s).isEqualTo("firstSupplier");
         }
-
-
     }
 
     @Test

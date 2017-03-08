@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
- * Created by Serge Bishyr on 3/3/17.
+ * @author by Serge Bishyr
  */
 public class ProducedDataFactoryTest {
 
