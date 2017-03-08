@@ -3,6 +3,7 @@ package com.sbishyr.junit.easytools.runner;
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -69,6 +70,37 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
+    @RunWith(JUnitDataProducer.class)
+    public static class MultipleProducersOfTheSameType {
+
+        //Not possible to use Result.getRunCount() because it counts unique method that has run.
+        //But we need to check that the same method has run 2 times
+        private static final AtomicInteger count = new AtomicInteger();
+
+        @DataProducer
+        public static Supplier<String> firstSupplier = () -> "firstSupplier";
+
+        @DataProducer
+        public static Supplier<String> secondSupplier = () -> "secondSupplier";
+
+        private static final Queue<String> providedValues = new LinkedList<>();
+        static {
+            providedValues.add("firstSupplier");
+            providedValues.add("secondSupplier");
+        }
+
+        @BeforeClass
+        public static void setUpCounter() {
+            count.set(0);
+        }
+
+        @Test
+        public void a(String s) {
+            assertThat(s).isEqualTo(providedValues.poll());
+            count.incrementAndGet();
+        }
+    }
+
     @Test
     public void shouldSupportRepeatableTestsRun() throws Exception {
         Result result = JUnitCore.runClasses(ComplexProducerClass.class);
@@ -81,5 +113,12 @@ public class JUnitDataProducerComplexTest {
         Result result = JUnitCore.runClasses(NamedDataProducer.class);
         assertThat(result.getRunCount()).isEqualTo(2);
         assertResultHasNoFailures(result);
+    }
+
+    @Test
+    public void shouldRunWithMultipleProvidersOfTheSameType() throws Exception {
+        Result result = JUnitCore.runClasses(MultipleProducersOfTheSameType.class);
+        assertResultHasNoFailures(result);
+        assertThat(MultipleProducersOfTheSameType.count.intValue()).isEqualTo(2);
     }
 }
