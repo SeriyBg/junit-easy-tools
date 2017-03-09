@@ -87,9 +87,6 @@ class ProducedDataFactory {
         }
         DataProducer annotation = annotatedField.getAnnotation(DataProducer.class);
         String dataProducerName = annotation.name().isEmpty() ? annotatedField.getName() : annotation.name();
-        if (paramAnnotation.producer().equals(dataProducerName)) {
-            return true;
-        }
-        return false;
+        return paramAnnotation.producer().equals(dataProducerName);
     }
 }
