@@ -1,6 +1,7 @@
 package com.sbishyr.junit.easytools.model.internal;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.model.TestClass;
@@ -30,6 +31,20 @@ public class MultipleParametersProducerAssignmentsTest {
         }
     }
 
+    public static class ClassWithNamedProducer {
+
+        @DataProducer(name = "notThis")
+        public static Supplier<String> notThis = () -> "42";
+
+        @DataProducer(name = "thisOne")
+        public static Supplier<String> thisOne = () -> "27";
+
+        public void a(@ProducedValue(producer = "thisOne") String s) {
+            //Do nothing
+        }
+
+    }
+
     @Before
     public void createAssignments() throws Exception {
         TestClass testClass = new TestClass(ClassWithMultipleAssignments.class);
@@ -52,5 +67,18 @@ public class MultipleParametersProducerAssignmentsTest {
         ProducerAssignments assigned = nextAssignments.assignNext(integerParameterProducers.get(0));
 
         assertThat(assigned.isComplete()).isTrue();
+    }
+
+    @Test
+    public void shouldAssignNamedProducer() throws Exception {
+        TestClass testClass = new TestClass(ClassWithNamedProducer.class);
+        assignments = ProducerAssignments.allUnassigned(
+                testClass, testClass.getJavaClass().getMethod("a", String.class));
+
+        List<ParameterProducer> stringParameterProducer = assignments.potentialNextParameterProducers();
+        assertThat(stringParameterProducer).hasSize(1);
+        assertThat(stringParameterProducer.get(0).produceParamValue()).isEqualTo("27");
+
+        assertThat(assignments.assignNext(stringParameterProducer.get(0)).isComplete()).isTrue();
     }
 }

@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHasNoFailures;
@@ -99,6 +100,41 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
+    @RunWith(JUnitDataProducer.class)
+    public static class IteratingOverMultipleOfTheSameType {
+
+        //Not possible to use Result.getRunCount() because it counts unique method that has run.
+        private static final AtomicInteger count = new AtomicInteger();
+
+        @DataProducer
+        public static Supplier<String> firstString = () -> "firstString";
+
+        @DataProducer
+        public static Supplier<String> secondString = () -> "42";
+
+        @DataProducer
+        public static IntSupplier intSupplier = () -> 27;
+
+        private static final Queue<String> providedValues = new LinkedList<>();
+
+        @BeforeClass
+        public static void setUpCounter() {
+            count.set(0);
+            providedValues.add("firstString");
+            providedValues.add("42");
+            providedValues.add("firstString");
+            providedValues.add("42");
+        }
+
+        @Test
+        @ProducedValues(iterations = 2)
+        public void a(String s, int i) {
+            assertThat(s).isEqualTo(providedValues.poll());
+            assertThat(i).isEqualTo(27);
+            count.incrementAndGet();
+        }
+    }
+
     @Test
     public void shouldSupportRepeatableTestsRun() throws Exception {
         Result result = JUnitCore.runClasses(ComplexProducerClass.class);
@@ -118,5 +154,12 @@ public class JUnitDataProducerComplexTest {
         Result result = JUnitCore.runClasses(MultipleProducersOfTheSameType.class);
         assertResultHasNoFailures(result);
         assertThat(MultipleProducersOfTheSameType.count.intValue()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldIterateForMultipleWithTheSameType() throws Exception {
+        Result result = JUnitCore.runClasses(IteratingOverMultipleOfTheSameType.class);
+        assertResultHasNoFailures(result);
+        assertThat(IteratingOverMultipleOfTheSameType.count.intValue()).isEqualTo(4);
     }
 }
