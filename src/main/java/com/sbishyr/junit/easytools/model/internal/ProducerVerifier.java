@@ -81,7 +81,7 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
             try {
                 return parameterProducer.produceParamValue();
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(e);
             }
         }
 
