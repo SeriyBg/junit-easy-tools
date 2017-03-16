@@ -26,6 +26,17 @@ class ProducerAssignments {
 
     private final List<ParameterSignature> unassigned;
 
+    private static final Map<Class<?>, Class<?>> primitiveSupplierToType = createPrimitiveSuppliers();
+
+    private static Map<Class<?>, Class<?>> createPrimitiveSuppliers() {
+        Map<Class<?>, Class<?>> map = new HashMap<>();
+        map.put(IntSupplier.class, Integer.TYPE);
+        map.put(LongSupplier.class, Long.TYPE);
+        map.put(BooleanSupplier.class, Boolean.TYPE);
+        map.put(DoubleSupplier.class, Double.TYPE);
+        return Collections.unmodifiableMap(map);
+    }
+
     private ProducerAssignments(
             TestClass testClass, List<ParameterProducer> assigned, List<ParameterSignature> unassigned) {
         this.testClass = testClass;
@@ -42,16 +53,6 @@ class ProducerAssignments {
         return unassigned.isEmpty();
     }
 
-    private static final Map<Class<?>, Class<?>> primitiveSupplierToType = createPrimitiveSuppliers();
-
-    private static Map<Class<?>, Class<?>> createPrimitiveSuppliers() {
-        Map<Class<?>, Class<?>> map = new HashMap<>();
-        map.put(IntSupplier.class, Integer.TYPE);
-        map.put(LongSupplier.class, Long.TYPE);
-        map.put(BooleanSupplier.class, Boolean.TYPE);
-        map.put(DoubleSupplier.class, Double.TYPE);
-        return Collections.unmodifiableMap(map);
-    }
 
     public List<ParameterProducer> potentialNextParameterProducers() {
         List<FrameworkField> annotatedFields = testClass.getAnnotatedFields(DataProducer.class);
