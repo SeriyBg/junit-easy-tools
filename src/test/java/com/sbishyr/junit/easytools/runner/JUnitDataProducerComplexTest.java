@@ -84,14 +84,12 @@ public class JUnitDataProducerComplexTest {
         public static Supplier<String> secondSupplier = () -> "secondSupplier";
 
         private static final Queue<String> providedValues = new LinkedList<>();
-        static {
-            providedValues.add("firstSupplier");
-            providedValues.add("secondSupplier");
-        }
 
         @BeforeClass
         public static void setUpCounter() {
             count.set(0);
+            providedValues.add("firstSupplier");
+            providedValues.add("secondSupplier");
         }
 
         @Test

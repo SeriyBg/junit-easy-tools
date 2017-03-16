@@ -1,6 +1,5 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -54,10 +53,35 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
 
         @Override
         public void evaluate() throws Throwable {
-            List<Object[]> argsSequence = new ProducedDataFactory(method, getTestClass().getAnnotatedFields(DataProducer.class))
-                                .getParamsSequence();
-            for (Object[] args : argsSequence) {
-                method.invokeExplosively(test, args);
+            ProducerAssignments assignments = ProducerAssignments.allUnassigned(getTestClass(), method.getMethod());
+            runWithAssignments(assignments);
+        }
+
+        private void runWithAssignments(ProducerAssignments assignments) throws Throwable {
+            if (!assignments.isComplete()) {
+                runWithIncompleteAssignments(assignments);
+            } else {
+                runWithCompleteAssignments(assignments);
+            }
+        }
+
+        private void runWithIncompleteAssignments(ProducerAssignments assignments) throws Throwable {
+            for (ParameterProducer parameterProducer : assignments.potentialNextParameterProducers()) {
+                runWithAssignments(assignments.assignNext(parameterProducer));
+            }
+        }
+
+        private void runWithCompleteAssignments(ProducerAssignments assignments) throws Throwable {
+            method.invokeExplosively(test, assignments.getAssignedParams().stream()
+                    .map(this::produceParamValue)
+                    .toArray());
+        }
+
+        private Object produceParamValue(ParameterProducer parameterProducer) {
+            try {
+                return parameterProducer.produceParamValue();
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException();
             }
         }
 

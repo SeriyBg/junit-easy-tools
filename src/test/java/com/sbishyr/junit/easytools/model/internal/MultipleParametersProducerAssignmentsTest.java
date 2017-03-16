@@ -23,7 +23,7 @@ public class MultipleParametersProducerAssignmentsTest {
         public static Supplier<String> stringSupplier = () -> "42";
 
         @DataProducer
-        public static Supplier<Integer> integerSupplier = () -> 42;
+        public static Supplier<Integer> integerSupplier = () -> 27;
 
         public void a(String s, Integer i) {
             //Do nothing
@@ -39,7 +39,18 @@ public class MultipleParametersProducerAssignmentsTest {
 
     @Test
     public void shouldGetPotentialForNextOfTheGivenType() throws Exception {
-        List<ParameterProducer> parameterProducers = assignments.potentialNextParameterProducers();
-        assertThat(parameterProducers).hasSize(1);
+        List<ParameterProducer> stringParameterProducer = assignments.potentialNextParameterProducers();
+        assertThat(stringParameterProducer).hasSize(1);
+        assertThat(stringParameterProducer.get(0).produceParamValue()).isEqualTo("42");
+
+        ProducerAssignments nextAssignments = assignments.assignNext(stringParameterProducer.get(0));
+        assertThat(assignments.isComplete()).isFalse();
+
+        List<ParameterProducer> integerParameterProducers = nextAssignments.potentialNextParameterProducers();
+        assertThat(integerParameterProducers).hasSize(1);
+        assertThat(integerParameterProducers.get(0).produceParamValue()).isEqualTo(27);
+        ProducerAssignments assigned = nextAssignments.assignNext(integerParameterProducers.get(0));
+
+        assertThat(assigned.isComplete()).isTrue();
     }
 }
