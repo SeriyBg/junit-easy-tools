@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.model;
+package com.sbishyr.junit.easytools.model.internal;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
@@ -7,12 +7,11 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 
 /**
  * @author by Serge Bishyr
@@ -66,14 +65,26 @@ public class ProducedDataFactoryTest {
         }
     }
 
+    public static class MultiplePossibleParam {
+        @DataProducer
+        public static Supplier<String> firstProducer = () -> "42";
+
+        @DataProducer
+        public static Supplier<String> secondProducer = () -> "27";
+
+        public void a(String s) {
+            //Do nothing
+        }
+    }
+
     @Test
     public void shouldSupplyInt() throws Exception {
         TestClass testClass = new TestClass(OneIntSupplier.class);
         FrameworkMethod method = new FrameworkMethod(testClass.getJavaClass().getMethod("a", Integer.TYPE));
 
-        Object[] producedParams =
-                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
-        assertThat(producedParams).isEqualTo(new Object[]{42});
+        List<Object[]> producedParams =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParamsSequence();
+        assertThat(producedParams).containsExactly(new Object[]{42});
     }
 
     @Test
@@ -82,9 +93,9 @@ public class ProducedDataFactoryTest {
         FrameworkMethod method = new FrameworkMethod(
                 testClass.getJavaClass().getMethod("a", Integer.class, String.class));
 
-        Object[] producedParams =
-                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
-        assertThat(producedParams).isEqualTo(new Object[]{42, "42"});
+        List<Object[]> producedParams =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParamsSequence();
+        assertThat(producedParams).containsExactly(new Object[]{42, "42"});
     }
 
     @Test
@@ -95,7 +106,8 @@ public class ProducedDataFactoryTest {
 
         assertThatExceptionOfType(InitializationError.class)
                 .isThrownBy(() ->
-                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams());
+                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class))
+                                .getParamsSequence());
     }
 
     @Test
@@ -104,10 +116,10 @@ public class ProducedDataFactoryTest {
         FrameworkMethod method = new FrameworkMethod(
                 testClass.getJavaClass().getMethod("a", String.class));
 
-        Object[] params =
-                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams();
+        List<Object[]> params =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParamsSequence();
 
-        assertThat(params).isEqualTo(new Object[]{"27"});
+        assertThat(params).containsExactly(new Object[]{"27"});
     }
 
     @Test
@@ -118,6 +130,19 @@ public class ProducedDataFactoryTest {
 
         assertThatExceptionOfType(InitializationError.class)
                 .isThrownBy(() ->
-                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParams());
+                        new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class))
+                                .getParamsSequence());
+    }
+
+    @Test
+    public void shouldGetAllPossibleParameters() throws Exception {
+        TestClass testClass = new TestClass(MultiplePossibleParam.class);
+        FrameworkMethod method = new FrameworkMethod(
+                testClass.getJavaClass().getMethod("a", String.class));
+
+        List<Object[]> paramsSequence =
+                new ProducedDataFactory(method, testClass.getAnnotatedFields(DataProducer.class)).getParamsSequence();
+
+        assertThat(paramsSequence).containsExactly(new Object[]{"42"}, new Object[]{"27"});
     }
 }

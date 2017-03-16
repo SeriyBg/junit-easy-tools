@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.model;
+package com.sbishyr.junit.easytools.model.internal;
 
 import org.junit.runners.model.FrameworkField;
 
@@ -11,12 +11,10 @@ import java.util.function.*;
  */
 class ParameterProducer {
 
-    private final Class<?> type;
 
     private final FrameworkField field;
 
-    ParameterProducer(Class<?> type, FrameworkField field) {
-        this.type = type;
+    ParameterProducer(FrameworkField field) {
         this.field = field;
     }
 
@@ -29,6 +27,6 @@ class ParameterProducer {
         classToProducer.put(DoubleSupplier.class, s -> ((DoubleSupplier)s).getAsDouble());
     }
     Object produceParamValue() throws IllegalAccessException {
-        return classToProducer.get(type).apply(field.get(null));
+        return classToProducer.get(field.getType()).apply(field.get(null));
     }
 }

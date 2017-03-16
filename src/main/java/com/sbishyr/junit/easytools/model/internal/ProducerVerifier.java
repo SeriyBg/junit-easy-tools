@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.model;
+package com.sbishyr.junit.easytools.model.internal;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
@@ -33,7 +33,14 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
     }
 
     public void evaluate() throws Throwable {
-        methodBlock(method).evaluate();
+        ProducedValues marker = method.getAnnotation(ProducedValues.class);
+        if (marker != null) {
+            for (int i = 0; i < marker.iterations(); i++) {
+                methodBlock(method).evaluate();
+            }
+        } else {
+            methodBlock(method).evaluate();
+        }
     }
 
     private class ProducerVerifierStatement extends Statement {
@@ -47,20 +54,12 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
 
         @Override
         public void evaluate() throws Throwable {
-            ProducedValues marker = method.getAnnotation(ProducedValues.class);
-            if (marker != null) {
-                for (int i = 0; i < marker.iterations(); i++) {
-                    invokeMethodExplosively();
-                }
-            } else {
-                invokeMethodExplosively();
+            List<Object[]> argsSequence = new ProducedDataFactory(method, getTestClass().getAnnotatedFields(DataProducer.class))
+                                .getParamsSequence();
+            for (Object[] args : argsSequence) {
+                method.invokeExplosively(test, args);
             }
         }
 
-        private void invokeMethodExplosively() throws Throwable {
-            Object[] args = new ProducedDataFactory(method, getTestClass().getAnnotatedFields(DataProducer.class))
-                                .getParams();
-            method.invokeExplosively(test, args);
-        }
     }
 }

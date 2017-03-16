@@ -1,4 +1,4 @@
-package com.sbishyr.junit.easytools.model;
+package com.sbishyr.junit.easytools.model.internal;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
@@ -9,10 +9,14 @@ import org.junit.runners.model.InitializationError;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 
 /**
  * @author by Serge Bishyr
@@ -27,7 +31,13 @@ class ProducedDataFactory {
         this.method = method;
     }
 
-    Object[] getParams() throws InitializationError, IllegalAccessException {
+    List<Object[]> getParamsSequence() throws InitializationError, IllegalAccessException {
+        List<Object[]> paramsSequence = new ArrayList<>();
+        paramsSequence.add(getParams());
+        return paramsSequence;
+    }
+
+    private Object[] getParams() throws InitializationError, IllegalAccessException {
         Parameter[] parameters = method.getMethod().getParameters();
         Object[] params = new Object[parameters.length];
 
@@ -58,7 +68,7 @@ class ProducedDataFactory {
             Class<?> type = annotatedField.getField().getType();
             Class<?> aClass = primitiveSupplierToType.get(type);
             if (aClass != null && aClass.equals(parameter.getType())) {
-                return new ParameterProducer(type, annotatedField).produceParamValue();
+                return new ParameterProducer(annotatedField).produceParamValue();
             } else {
                 Type genericType = annotatedField.getField().getGenericType();
 
@@ -67,7 +77,7 @@ class ProducedDataFactory {
                     Type[] actualTypeArguments = parametrizedType.getActualTypeArguments();
                     Type actualTypeArgument = actualTypeArguments[0];
                     if (parameter.getType().equals(actualTypeArgument)) {
-                        return new ParameterProducer(type, annotatedField).produceParamValue();
+                        return new ParameterProducer(annotatedField).produceParamValue();
                     }
                 }
             }

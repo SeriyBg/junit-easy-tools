@@ -1,6 +1,6 @@
 package com.sbishyr.junit.easytools.runner;
 
-import com.sbishyr.junit.easytools.model.ProducerVerifier;
+import com.sbishyr.junit.easytools.model.internal.ProducerVerifier;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
