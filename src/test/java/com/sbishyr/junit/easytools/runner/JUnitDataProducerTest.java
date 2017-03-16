@@ -18,7 +18,9 @@ public class JUnitDataProducerTest {
 
     @RunWith(JUnitDataProducer.class)
     public static class JunitTestClass {
-        @Test public void a(){}
+        @Test public void a(){
+            //Do nothing. Check that method runs
+        }
     }
 
     @RunWith(JUnitDataProducer.class)
