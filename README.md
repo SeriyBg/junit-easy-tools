@@ -51,3 +51,38 @@ public void testMethod(@ProducedValue(producer = "calculated") String string) {
    ...
 }
 ```
+
+#### Multiple @DataProducer of the same type
+Method `test(String s)` will be executed twice. 
+The first time value from `random` `@DataProducer` will be injected.
+The second time value from `queue` `@DataProducer` will be injected. 
+```java
+@DataProducer
+public static Supplier<String> random = () -> RandomStringProvider.get();
+
+@DataProducer
+public static Supplier<String> queue = () -> StringQueue.next();
+ 
+@Test
+public void test(String s) {
+    ...
+}
+```
+
+#### Multiple @DataProducer of the same type and iterations
+Method `test(String s)` will be executed six times.
+Three iterations with each `@DataProducer`.
+
+```java
+@DataProducer
+public static Supplier<String> random = () -> RandomStringProvider.get();
+
+@DataProducer
+public static Supplier<String> queue = () -> StringQueue.next();
+
+@Test
+@ProducedValues(iterations = 3)
+public void test(String s) {
+    ...
+}
+```
