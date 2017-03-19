@@ -10,7 +10,7 @@ import org.junit.runners.model.TestClass;
 import java.util.List;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 public class ProducerVerifier extends BlockJUnit4ClassRunner {
 

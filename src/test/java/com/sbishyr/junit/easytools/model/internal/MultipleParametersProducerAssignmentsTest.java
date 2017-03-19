@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 public class MultipleParametersProducerAssignmentsTest {
 

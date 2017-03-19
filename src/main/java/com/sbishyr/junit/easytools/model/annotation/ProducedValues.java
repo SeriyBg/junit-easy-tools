@@ -4,9 +4,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProducedValues {
     int iterations() default 1;
+
+    String name() default "";
 }

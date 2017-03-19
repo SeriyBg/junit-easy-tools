@@ -12,9 +12,9 @@ import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHas
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
-public class JUnitDataProducerTest {
+public class SimpleJUnitDataProducerTest {
 
     @RunWith(JUnitDataProducer.class)
     public static class JunitTestClass {

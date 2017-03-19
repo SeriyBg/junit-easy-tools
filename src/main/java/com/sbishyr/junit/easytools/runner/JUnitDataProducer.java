@@ -1,5 +1,6 @@
 package com.sbishyr.junit.easytools.runner;
 
+import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import com.sbishyr.junit.easytools.model.internal.ProducerVerifier;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -11,7 +12,7 @@ import org.junit.runners.model.TestClass;
 import java.util.List;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 public class JUnitDataProducer extends BlockJUnit4ClassRunner {
 
@@ -32,6 +33,16 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
         List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(Test.class);
         for (FrameworkMethod annotatedMethod : annotatedMethods) {
             annotatedMethod.validatePublicVoid(false, errors);
+        }
+    }
+
+    @Override
+    protected String testName(FrameworkMethod method) {
+        ProducedValues annotation = method.getAnnotation(ProducedValues.class);
+        if (annotation != null && !annotation.name().isEmpty()) {
+            return  super.testName(method) + "[" + annotation.name() + "]";
+        } else {
+            return super.testName(method);
         }
     }
 
