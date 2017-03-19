@@ -1,6 +1,6 @@
 package com.sbishyr.junit.easytools.runner;
 
-import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
+import com.sbishyr.junit.easytools.model.internal.DataProducerTestName;
 import com.sbishyr.junit.easytools.model.internal.ProducerVerifier;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -38,12 +38,7 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
 
     @Override
     protected String testName(FrameworkMethod method) {
-        ProducedValues annotation = method.getAnnotation(ProducedValues.class);
-        if (annotation != null && !annotation.name().isEmpty()) {
-            return  super.testName(method) + "[" + annotation.name() + "]";
-        } else {
-            return super.testName(method);
-        }
+        return new DataProducerTestName(method).name();
     }
 
     private static class DataProducedStatement extends Statement {
