@@ -6,18 +6,25 @@ import org.junit.runners.model.FrameworkMethod;
 /**
  * @author Serge Bishyr
  */
-public class DataProducerTestName {
+class DataProducerTestName {
 
     private final FrameworkMethod method;
 
-    public DataProducerTestName(FrameworkMethod method) {
+    private final Object[] params;
+
+    DataProducerTestName(FrameworkMethod method, Object[] params) {
         this.method = method;
+        this.params = params;
     }
 
-    public String name() {
+    String name() {
         ProducedValues annotation = method.getAnnotation(ProducedValues.class);
         if (annotation != null && !annotation.name().isEmpty()) {
-            return method.getName() + "[" + annotation.name() + "]";
+            String replacedName = annotation.name();
+            for (int i = 0; i < params.length; i++) {
+                replacedName = replacedName.replaceAll("\\{" + i + "}", String.valueOf(params[i]));
+            }
+            return method.getName() + "[" + replacedName + "]";
         }
         return method.getName();
     }

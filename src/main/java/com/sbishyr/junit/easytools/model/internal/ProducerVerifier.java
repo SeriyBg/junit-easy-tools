@@ -23,7 +23,7 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
 
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
-        return new ProducerVerifierStatement(method, test);
+        return new ProducerVerifierStatement(method);
     }
 
     @Override
@@ -44,11 +44,9 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
 
     private class ProducerVerifierStatement extends Statement {
         private final FrameworkMethod method;
-        private final Object test;
 
-        public ProducerVerifierStatement(FrameworkMethod method, Object test) {
+        private ProducerVerifierStatement(FrameworkMethod method) {
             this.method = method;
-            this.test = test;
         }
 
         @Override
@@ -72,9 +70,37 @@ public class ProducerVerifier extends BlockJUnit4ClassRunner {
         }
 
         private void runWithCompleteAssignments(ProducerAssignments assignments) throws Throwable {
-            method.invokeExplosively(test, assignments.getAssignedParams().stream()
+            Object[] params = assignments.getAssignedParams().stream()
                     .map(this::produceParamValue)
-                    .toArray());
+                    .toArray();
+
+            new BlockJUnit4ClassRunner(getTestClass().getJavaClass()) {
+
+                @Override
+                protected void validateTestMethods(List<Throwable> errors) {
+                    //Do nothing
+                }
+
+                @Override
+                protected Statement methodInvoker(FrameworkMethod method, Object test) {
+                    return new Statement() {
+                        @Override
+                        public void evaluate() throws Throwable {
+                            method.invokeExplosively(test, params);
+                        }
+                    };
+                }
+
+                @Override
+                protected Statement methodBlock(FrameworkMethod method) {
+                    return super.methodBlock(method);
+                }
+
+                @Override
+                protected String testName(FrameworkMethod method) {
+                    return new DataProducerTestName(method, params).name();
+                }
+            }.methodBlock(method).evaluate();
         }
 
         private Object produceParamValue(ParameterProducer parameterProducer) {

@@ -1,6 +1,5 @@
 package com.sbishyr.junit.easytools.runner;
 
-import com.sbishyr.junit.easytools.model.internal.DataProducerTestName;
 import com.sbishyr.junit.easytools.model.internal.ProducerVerifier;
 import org.junit.Test;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -22,9 +21,6 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
 
     @Override
     protected Statement methodBlock(FrameworkMethod method) {
-        if (method.getMethod().getParameterCount() == 0) {
-            return super.methodBlock(method);
-        }
         return new DataProducedStatement(method, getTestClass());
     }
 
@@ -34,11 +30,6 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
         for (FrameworkMethod annotatedMethod : annotatedMethods) {
             annotatedMethod.validatePublicVoid(false, errors);
         }
-    }
-
-    @Override
-    protected String testName(FrameworkMethod method) {
-        return new DataProducerTestName(method).name();
     }
 
     private static class DataProducedStatement extends Statement {
