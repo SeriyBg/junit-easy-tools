@@ -9,6 +9,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHasNoFailures;
@@ -46,10 +47,19 @@ public class CustomTestNameJUnitDataProducerTest {
         @DataProducer
         public static Supplier<String> stringSupplier = () -> "supplied custom name";
 
+        @DataProducer
+        public static IntSupplier intSupplier = () -> 42;
+
         @Test
         @ProducedValues(name = "{0}")
         public void a(String s) {
-            assertThat(testName.getMethodName()).isEqualTo("a[" + s + "]");
+            assertThat(testName.getMethodName()).isEqualTo("a[supplied custom name]");
+        }
+
+        @Test
+        @ProducedValues(name = "{0}, {1}")
+        public void b(String s, int i) {
+            assertThat(testName.getMethodName()).isEqualTo("b[supplied custom name, 42]");
         }
     }
 
