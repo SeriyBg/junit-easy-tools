@@ -5,73 +5,56 @@ import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
-import static com.sbishyr.junit.easytools.utils.ResultAssertions.assertResultHasNoFailures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Serge Bishyr
  */
+@RunWith(JUnitDataProducer.class)
 public class CustomTestNameJUnitDataProducerTest {
 
-    @RunWith(JUnitDataProducer.class)
-    public static class CustomDisplayNameTestClass {
+    @Rule
+    public TestName testName = new TestName();
 
-        @Rule
-        public TestName testName = new TestName();
+    @DataProducer
+    public static Supplier<String> stringSupplier = () -> "supplied custom name";
 
-        @Test
-        @ProducedValues(name = "custom test name")
-        public void a() {
-            assertThat(testName.getMethodName()).isEqualTo("a[custom test name]");
-        }
+    @DataProducer
+    public static IntSupplier intSupplier = () -> 42;
 
-        @Test
-        public void b() {
-            assertThat(testName.getMethodName()).isEqualTo("b");
-        }
-    }
-
-    @RunWith(JUnitDataProducer.class)
-    public static class CustomNameWithParameters {
-
-        @Rule
-        public TestName testName = new TestName();
-
-        @DataProducer
-        public static Supplier<String> stringSupplier = () -> "supplied custom name";
-
-        @DataProducer
-        public static IntSupplier intSupplier = () -> 42;
-
-        @Test
-        @ProducedValues(name = "{0}")
-        public void a(String s) {
-            assertThat(testName.getMethodName()).isEqualTo("a[supplied custom name]");
-        }
-
-        @Test
-        @ProducedValues(name = "{0}, {1}")
-        public void b(String s, int i) {
-            assertThat(testName.getMethodName()).isEqualTo("b[supplied custom name, 42]");
-        }
+    @Test
+    public void shouldHaveOriginalName() throws Exception {
+        assertThat(testName.getMethodName()).isEqualTo("shouldHaveOriginalName");
     }
 
     @Test
+    @ProducedValues(name = "custom test name")
     public void shouldProvideCustomTestName() throws Exception {
-        Result result = JUnitCore.runClasses(CustomDisplayNameTestClass.class);
-        assertResultHasNoFailures(result);
+        assertThat(testName.getMethodName()).isEqualTo("shouldProvideCustomTestName[custom test name]");
     }
 
     @Test
-    public void shouldIncludeParametersInTestName() throws Exception {
-        Result result = JUnitCore.runClasses(CustomNameWithParameters.class);
-        assertResultHasNoFailures(result);
+    @ProducedValues(name = "{0}")
+    public void shouldIncludeParameterToTestName(String s) throws Exception {
+        assertThat(testName.getMethodName()).isEqualTo("shouldIncludeParameterToTestName[supplied custom name]");
+    }
+
+    @Test
+    @ProducedValues(name = "{0}, {1}")
+    public void shouldIncludeParametersOfDifferentType(String s, int i) throws Exception {
+        assertThat(testName.getMethodName())
+                .isEqualTo("shouldIncludeParametersOfDifferentType[supplied custom name, 42]");
+
+    }
+
+    @Test
+    @ProducedValues(name = "{index}")
+    public void shouldIncludeIndex() throws Exception {
+        assertThat(testName.getMethodName()).isEqualTo("shouldIncludeIndex[0]");
     }
 }
