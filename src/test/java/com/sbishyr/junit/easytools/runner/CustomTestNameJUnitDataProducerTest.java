@@ -2,11 +2,13 @@ package com.sbishyr.junit.easytools.runner;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
@@ -26,6 +28,13 @@ public class CustomTestNameJUnitDataProducerTest {
 
     @DataProducer
     public static IntSupplier intSupplier = () -> 42;
+
+    private static AtomicInteger indexCount = new AtomicInteger();
+
+    @BeforeClass
+    public static void setUp() {
+        indexCount.set(0);
+    }
 
     @Test
     public void shouldHaveOriginalName() throws Exception {
@@ -49,12 +58,18 @@ public class CustomTestNameJUnitDataProducerTest {
     public void shouldIncludeParametersOfDifferentType(String s, int i) throws Exception {
         assertThat(testName.getMethodName())
                 .isEqualTo("shouldIncludeParametersOfDifferentType[supplied custom name, 42]");
-
     }
 
     @Test
     @ProducedValues(name = "{index}")
     public void shouldIncludeIndex() throws Exception {
         assertThat(testName.getMethodName()).isEqualTo("shouldIncludeIndex[0]");
+    }
+
+    @Test
+    @ProducedValues(iterations = 2, name = "{index}")
+    public void shouldIncreaseIndex() throws Exception {
+        int index = indexCount.getAndIncrement();
+        assertThat(testName.getMethodName()).isEqualTo("shouldIncreaseIndex[" + index + "]");
     }
 }

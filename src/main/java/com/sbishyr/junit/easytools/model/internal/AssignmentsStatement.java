@@ -1,37 +1,34 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import com.sbishyr.junit.easytools.model.annotation.ProducedValues;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
-import org.junit.runners.model.TestClass;
 
 import java.util.List;
 
 /**
  * @author Serge Bishyr
  */
-public class ProducerVerifierStatement extends Statement {
+class AssignmentsStatement extends Statement {
 
-    private final TestClass testClass;
+    private final Class<?> testClass;
+
     private final FrameworkMethod method;
 
-    public ProducerVerifierStatement(TestClass testClass, FrameworkMethod method) {
+    private final ProducerAssignments assignments;
+
+    private final int index;
+
+    AssignmentsStatement(Class<?> testClass, FrameworkMethod method, ProducerAssignments assignments, int index) {
         this.testClass = testClass;
         this.method = method;
+        this.assignments = assignments;
+        this.index = index;
     }
 
     @Override
     public void evaluate() throws Throwable {
-        ProducedValues marker = method.getAnnotation(ProducedValues.class);
-        ProducerAssignments assignments = ProducerAssignments.allUnassigned(testClass, method.getMethod());
-        if (marker != null) {
-            for (int i = 0; i < marker.iterations(); i++) {
-                runWithAssignments(assignments);
-            }
-        } else {
-            runWithAssignments(assignments);
-        }
+        runWithAssignments(assignments);
     }
 
     private void runWithAssignments(ProducerAssignments assignments) throws Throwable {
@@ -53,7 +50,7 @@ public class ProducerVerifierStatement extends Statement {
                 .map(this::produceParamValue)
                 .toArray();
 
-        new BlockJUnit4ClassRunner(testClass.getJavaClass()) {
+        new BlockJUnit4ClassRunner(testClass) {
 
             @Override
             protected void validateTestMethods(List<Throwable> errors) {
@@ -77,7 +74,7 @@ public class ProducerVerifierStatement extends Statement {
 
             @Override
             protected String testName(FrameworkMethod method) {
-                return new DataProducerTestName(method, params).name();
+                return new DataProducerTestName(method, params, index).name();
             }
         }.methodBlock(method).evaluate();
     }
@@ -89,5 +86,4 @@ public class ProducerVerifierStatement extends Statement {
             throw new IllegalArgumentException(e);
         }
     }
-
 }
