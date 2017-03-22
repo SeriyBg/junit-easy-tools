@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.function.*;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 class ParameterProducer {
 

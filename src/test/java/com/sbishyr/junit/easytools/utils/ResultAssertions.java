@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Custom wrapper to provide quick assertions on {@link Result}
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 public class ResultAssertions extends Assertions {
 
@@ -28,6 +28,6 @@ public class ResultAssertions extends Assertions {
     }
 
     private static String formFailureDescription(Failure failure) {
-        return failure.getDescription() + " " + failure.getException().getMessage();
+        return failure.getMessage() + " " +failure.getDescription() + " " + failure.getException().getMessage();
     }
 }

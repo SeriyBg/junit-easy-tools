@@ -16,7 +16,7 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 
 /**
- * @author by Serge Bishyr
+ * @author Serge Bishyr
  */
 class ProducerAssignments {
 
