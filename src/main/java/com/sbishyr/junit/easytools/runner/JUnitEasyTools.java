@@ -13,9 +13,9 @@ import java.util.List;
 /**
  * @author Serge Bishyr
  */
-public class JUnitDataProducer extends BlockJUnit4ClassRunner {
+public class JUnitEasyTools extends BlockJUnit4ClassRunner {
 
-    public JUnitDataProducer(Class<?> klass) throws InitializationError {
+    public JUnitEasyTools(Class<?> klass) throws InitializationError {
         super(klass);
     }
 
@@ -30,6 +30,11 @@ public class JUnitDataProducer extends BlockJUnit4ClassRunner {
         for (FrameworkMethod annotatedMethod : annotatedMethods) {
             annotatedMethod.validatePublicVoid(false, errors);
         }
+    }
+
+    @Override
+    protected void validateConstructor(List<Throwable> errors) {
+        //Do nothing
     }
 
     private static class DataProducedStatement extends Statement {

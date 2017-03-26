@@ -1,5 +1,6 @@
 package com.sbishyr.junit.easytools.model.internal;
 
+import com.sbishyr.junit.easytools.model.annotation.TestFactory;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -58,6 +59,11 @@ class AssignmentsStatement extends Statement {
             }
 
             @Override
+            protected void validateConstructor(List<Throwable> errors) {
+                //Do nothing
+            }
+
+            @Override
             protected Statement methodInvoker(FrameworkMethod method, Object test) {
                 return new Statement() {
                     @Override
@@ -76,6 +82,16 @@ class AssignmentsStatement extends Statement {
             protected String testName(FrameworkMethod method) {
                 return new DataProducerTestName(method, params, index).name();
             }
+
+            @Override
+            protected Object createTest() throws Exception {
+                List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(TestFactory.class);
+                if (!annotatedMethods.isEmpty()) {
+                    return annotatedMethods.get(0).getMethod().invoke(null);
+                }
+                return super.createTest();
+            }
+
         }.methodBlock(method).evaluate();
     }
 
