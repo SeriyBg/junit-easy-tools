@@ -1,6 +1,5 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import com.sbishyr.junit.easytools.model.annotation.TestFactory;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -85,11 +84,7 @@ class AssignmentsStatement extends Statement {
 
             @Override
             protected Object createTest() throws Exception {
-                List<FrameworkMethod> annotatedMethods = getTestClass().getAnnotatedMethods(TestFactory.class);
-                if (!annotatedMethods.isEmpty()) {
-                    return annotatedMethods.get(0).getMethod().invoke(null);
-                }
-                return super.createTest();
+                return new TestObject(getTestClass()).createTestObject();
             }
 
         }.methodBlock(method).evaluate();
