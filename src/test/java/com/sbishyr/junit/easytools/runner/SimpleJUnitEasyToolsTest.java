@@ -14,16 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class SimpleJUnitDataProducerTest {
+public class SimpleJUnitEasyToolsTest {
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class JunitTestClass {
         @Test public void a(){
             //Do nothing. Check that method runs
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class TestWithProducedData {
         @DataProducer
         public static IntSupplier intProducer = () -> 1;
@@ -40,7 +40,7 @@ public class SimpleJUnitDataProducerTest {
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class PrimitiveSuppliers {
 
         @DataProducer

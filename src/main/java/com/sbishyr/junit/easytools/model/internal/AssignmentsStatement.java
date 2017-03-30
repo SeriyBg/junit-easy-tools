@@ -58,6 +58,11 @@ class AssignmentsStatement extends Statement {
             }
 
             @Override
+            protected void validateConstructor(List<Throwable> errors) {
+                //Do nothing
+            }
+
+            @Override
             protected Statement methodInvoker(FrameworkMethod method, Object test) {
                 return new Statement() {
                     @Override
@@ -76,6 +81,12 @@ class AssignmentsStatement extends Statement {
             protected String testName(FrameworkMethod method) {
                 return new DataProducerTestName(method, params, index).name();
             }
+
+            @Override
+            protected Object createTest() throws Exception {
+                return new TestObject(getTestClass()).createTestObject();
+            }
+
         }.methodBlock(method).evaluate();
     }
 

@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class JUnitDataProducerComplexTest {
+public class JUnitEasyToolsComplexTest {
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class ComplexProducerClass {
 
         //Not possible to use Result.getRunCount() because it counts unique method that has run.
@@ -51,7 +51,7 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class NamedDataProducer {
 
         @DataProducer
@@ -71,7 +71,7 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class MultipleProducersOfTheSameType {
 
         //Not possible to use Result.getRunCount() because it counts unique method that has run.
@@ -100,7 +100,7 @@ public class JUnitDataProducerComplexTest {
         }
     }
 
-    @RunWith(JUnitDataProducer.class)
+    @RunWith(JUnitEasyTools.class)
     public static class IteratingOverMultipleOfTheSameType {
 
         //Not possible to use Result.getRunCount() because it counts unique method that has run.
