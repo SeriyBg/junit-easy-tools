@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class JUnitEasyToolsComplexTest {
+public class JUnitEasyToolsComplexDataProducerTest {
 
     @RunWith(JUnitEasyTools.class)
     public static class ComplexProducerClass {

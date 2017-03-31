@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class OneParameterProducerAssignmentsTest {
+public class ProducerAssignmentsOneParameterTest {
 
     private ProducerAssignments assignments;
 
