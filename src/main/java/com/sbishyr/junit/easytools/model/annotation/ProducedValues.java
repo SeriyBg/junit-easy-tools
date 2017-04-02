@@ -11,4 +11,6 @@ public @interface ProducedValues {
     int iterations() default 1;
 
     String name() default "";
+
+    String[] withValues() default {};
 }
