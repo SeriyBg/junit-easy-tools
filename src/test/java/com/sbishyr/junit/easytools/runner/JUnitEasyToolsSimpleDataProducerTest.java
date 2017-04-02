@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class SimpleJUnitEasyToolsTest {
+public class JUnitEasyToolsSimpleDataProducerTest {
 
     @RunWith(JUnitEasyTools.class)
     public static class JunitTestClass {

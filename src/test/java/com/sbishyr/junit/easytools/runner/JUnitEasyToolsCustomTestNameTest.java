@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Serge Bishyr
  */
 @RunWith(JUnitEasyTools.class)
-public class CustomTestNameJUnitEasyToolsTest {
+public class JUnitEasyToolsCustomTestNameTest {
 
     @Rule
     public TestName testName = new TestName();

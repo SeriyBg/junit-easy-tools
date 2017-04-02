@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Serge Bishyr
  */
-public class MultipleParametersProducerAssignmentsTest {
+public class ProducerAssignmentsMultipleParametersTest {
 
     private ProducerAssignments assignments;
 
