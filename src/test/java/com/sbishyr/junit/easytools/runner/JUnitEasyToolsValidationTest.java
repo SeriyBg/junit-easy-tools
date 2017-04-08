@@ -1,12 +1,15 @@
 package com.sbishyr.junit.easytools.runner;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Serge Bishyr
@@ -16,15 +19,20 @@ public class JUnitEasyToolsValidationTest {
     @RunWith(JUnitEasyTools.class)
     public static class NoDataProducer {
 
-        @Test(expected = InitializationError.class)
+        @Test
+        @Ignore("Method should throw InitializationError. Ignore to prevent running.")
         public void a(String s) {
             //do nothing
         }
     }
 
     @Test
-    public void shouldThrowExceptionOnNoDataProducer() throws Exception {
-        Result result = JUnitCore.runClasses(NoDataProducer.class);
-        assertThat(result.getFailureCount()).isEqualTo(1);
+    public void shouldThrowExceptionOnNoDataProducer() throws Throwable {
+        Method testMethod = NoDataProducer.class.getMethod("a", String.class);
+        FrameworkMethod method = new FrameworkMethod(testMethod);
+        FrameworkMethod spyMethod = spy(method);
+        when(spyMethod.getAnnotation(Ignore.class)).thenReturn(null);
+        assertThatExceptionOfType(InitializationError.class).isThrownBy(() ->
+                new JUnitEasyTools(NoDataProducer.class).methodBlock(method).evaluate());
     }
 }
