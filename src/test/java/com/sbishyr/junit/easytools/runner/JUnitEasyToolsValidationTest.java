@@ -9,6 +9,7 @@ import org.junit.runners.model.InitializationError;
 import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -22,6 +23,7 @@ public class JUnitEasyToolsValidationTest {
         @Test
         @Ignore("Method should throw InitializationError. Ignore to prevent running.")
         public void a(String s) {
+            fail("Should not run!");
             //do nothing
         }
     }
