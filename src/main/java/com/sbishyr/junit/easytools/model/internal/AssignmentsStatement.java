@@ -2,6 +2,7 @@ package com.sbishyr.junit.easytools.model.internal;
 
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
+import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import java.util.List;
@@ -40,7 +41,12 @@ class AssignmentsStatement extends Statement {
     }
 
     private void runWithIncompleteAssignments(ProducerAssignments assignments) throws Throwable {
-        for (ParameterProducer parameterProducer : assignments.potentialNextParameterProducers()) {
+        List<ParameterProducer> parameterProducers = assignments.potentialNextParameterProducers();
+        if (parameterProducers.isEmpty()) {
+            throw new InitializationError(
+                    "No @DataProducer found to inject to suite method " + method.getName());
+        }
+        for (ParameterProducer parameterProducer : parameterProducers) {
             runWithAssignments(assignments.assignNext(parameterProducer));
         }
     }

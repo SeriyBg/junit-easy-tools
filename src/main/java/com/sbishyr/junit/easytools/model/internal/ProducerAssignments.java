@@ -49,12 +49,12 @@ class ProducerAssignments {
         return new ProducerAssignments(testClass, new ArrayList<>(), signatures);
     }
 
-    public boolean isComplete() {
+    boolean isComplete() {
         return unassigned.isEmpty();
     }
 
 
-    public List<ParameterProducer> potentialNextParameterProducers() {
+    List<ParameterProducer> potentialNextParameterProducers() {
         List<FrameworkField> annotatedFields = testClass.getAnnotatedFields(DataProducer.class);
         ParameterSignature next = nextUnassigned();
 
@@ -99,13 +99,13 @@ class ProducerAssignments {
     }
 
 
-    public ProducerAssignments assignNext(ParameterProducer parameterProducer) {
+    ProducerAssignments assignNext(ParameterProducer parameterProducer) {
         List<ParameterProducer> newAssigned = new ArrayList<>(assigned);
         newAssigned.add(parameterProducer);
         return new ProducerAssignments(testClass, newAssigned, unassigned.subList(1, unassigned.size()));
     }
 
-    public List<ParameterProducer> getAssignedParams() {
+    List<ParameterProducer> getAssignedParams() {
         return assigned;
     }
 }
