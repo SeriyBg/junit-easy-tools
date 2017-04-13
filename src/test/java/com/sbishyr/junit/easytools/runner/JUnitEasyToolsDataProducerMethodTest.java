@@ -1,6 +1,7 @@
 package com.sbishyr.junit.easytools.runner;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -29,12 +30,14 @@ public class JUnitEasyToolsDataProducerMethodTest {
         }
 
         @Test
+        @Ignore("#29")
         public void a(String s) {
             assertThat(s).isEqualTo("return");
         }
     }
 
     @Test
+    @Ignore("#29")
     public void shouldSupportMethodWithCollectionReturnAsDataProducer() throws Exception {
         Result result = JUnitCore.runClasses(MethodAsDataProducer.class);
         assertResultHasNoFailures(result);

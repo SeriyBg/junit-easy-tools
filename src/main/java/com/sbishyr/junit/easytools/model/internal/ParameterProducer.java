@@ -31,7 +31,11 @@ class ParameterProducer {
         this.field = field;
     }
 
-    Object produceParamValue() throws IllegalAccessException {
-        return classToProducer.get(field.getType()).apply(field.get(null));
+    Object produceParamValue() {
+        try {
+            return classToProducer.get(field.getType()).apply(field.get(null));
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

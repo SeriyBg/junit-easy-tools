@@ -53,7 +53,7 @@ class AssignmentsStatement extends Statement {
 
     private void runWithCompleteAssignments(ProducerAssignments assignments) throws Throwable {
         Object[] params = assignments.getAssignedParams().stream()
-                .map(this::produceParamValue)
+                .map(ParameterProducer::produceParamValue)
                 .toArray();
 
         new BlockJUnit4ClassRunner(testClass) {
@@ -96,11 +96,4 @@ class AssignmentsStatement extends Statement {
         }.methodBlock(method).evaluate();
     }
 
-    private Object produceParamValue(ParameterProducer parameterProducer) {
-        try {
-            return parameterProducer.produceParamValue();
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
 }
