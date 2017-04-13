@@ -4,11 +4,8 @@ import org.junit.experimental.theories.ParameterSignature;
 import org.junit.runners.model.TestClass;
 
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -21,17 +18,6 @@ class ProducerAssignments {
     private final List<ParameterProducer> assigned;
 
     private final List<ParameterSignature> unassigned;
-
-    private static final Map<Class<?>, Class<?>> primitiveSupplierToType = createPrimitiveSuppliers();
-
-    private static Map<Class<?>, Class<?>> createPrimitiveSuppliers() {
-        Map<Class<?>, Class<?>> map = new HashMap<>();
-        map.put(IntSupplier.class, Integer.TYPE);
-        map.put(LongSupplier.class, Long.TYPE);
-        map.put(BooleanSupplier.class, Boolean.TYPE);
-        map.put(DoubleSupplier.class, Double.TYPE);
-        return Collections.unmodifiableMap(map);
-    }
 
     private ProducerAssignments(
             TestClass testClass, List<ParameterProducer> assigned, List<ParameterSignature> unassigned) {
