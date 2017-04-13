@@ -6,6 +6,7 @@ import org.junit.experimental.theories.ParameterSignature;
 import org.junit.runners.model.TestClass;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -63,5 +64,36 @@ public class PotentialAssignmentsTest {
 
         AssignmentObject assignmentObject = assignmentObjects.get(0);
         assertThat(assignmentObject.parameterProducer().produceParamValue()).isEqualTo("value");
+    }
+
+    public static class AssignmentsFromMethod {
+
+        @DataProducer
+        public static List<Supplier<String>> dataProducer() {
+            return Arrays.asList(
+                    () -> "42",
+                    () -> "27");
+        }
+
+        public void a(String s) {
+            //Do nothing
+        }
+    }
+
+    @Test
+    public void shouldFindPossibleAssignmentsFromMethod() throws Exception {
+        assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
+        final List<AssignmentObject> assignmentObjects = assignments.allPossible();
+
+        assertThat(assignmentObjects).hasSize(2);
+
+        ArrayList<ParameterSignature> parameterSignature =
+                ParameterSignature.signatures(AssignmentsFromMethod.class.getMethod("a", String.class));
+
+        assertThat(assignmentObjects.get(0).isValidFor(parameterSignature.get(0)));
+        assertThat(assignmentObjects.get(0).parameterProducer().produceParamValue()).isEqualTo("42");
+
+        assertThat(assignmentObjects.get(1).isValidFor(parameterSignature.get(0)));
+        assertThat(assignmentObjects.get(1).parameterProducer().produceParamValue()).isEqualTo("27");
     }
 }

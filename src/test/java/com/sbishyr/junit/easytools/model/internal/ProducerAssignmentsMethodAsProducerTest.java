@@ -1,7 +1,6 @@
 package com.sbishyr.junit.easytools.model.internal;
 
 import com.sbishyr.junit.easytools.model.annotation.DataProducer;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.model.TestClass;
 
@@ -31,7 +30,6 @@ public class ProducerAssignmentsMethodAsProducerTest {
     }
 
     @Test
-    @Ignore("#29")
     public void shouldSupportMethodDataProducer() throws Exception {
         TestClass testClass = new TestClass(ClassWithMethodProducer.class);
         ProducerAssignments assignments = ProducerAssignments.allUnassigned(
