@@ -1,5 +1,7 @@
 package com.sbishyr.junit.easytools.model.internal;
 
+import com.sbishyr.junit.easytools.model.annotation.DataProducer;
+import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import org.junit.experimental.theories.ParameterSignature;
 import org.junit.runners.model.FrameworkField;
 
@@ -37,13 +39,15 @@ class FieldAssignmentObject implements AssignmentObject {
 
     @Override
     public boolean isValidFor(ParameterSignature parameterSignature) {
+        if (!isProducerNameValid(parameterSignature.getAnnotation(ProducedValue.class))) {
+            return false;
+        }
         Class<?> type = field.getField().getType();
         Class<?> aClass = primitiveSupplierToType.get(type);
         if (aClass != null && aClass.equals(parameterSignature.getType())) {
             return true;
         } else {
             Type genericType = field.getField().getGenericType();
-
             if (genericType instanceof ParameterizedType) {
                 ParameterizedType parametrizedType = (ParameterizedType) genericType;
                 Type[] actualTypeArguments = parametrizedType.getActualTypeArguments();
@@ -57,7 +61,20 @@ class FieldAssignmentObject implements AssignmentObject {
     }
 
     @Override
-    public Object produceParamValue() {
-        return new ParameterProducer(field).produceParamValue();
+    public ParameterProducer parameterProducer() {
+        try {
+            return new ParameterProducer(field.getType(), field.get(null));
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private boolean isProducerNameValid(ProducedValue paramAnnotation) {
+        if (paramAnnotation == null) {
+            return true;
+        }
+        DataProducer annotation = field.getAnnotation(DataProducer.class);
+        String dataProducerName = annotation.name().isEmpty() ? field.getName() : annotation.name();
+        return paramAnnotation.producer().equals(dataProducerName);
     }
 }

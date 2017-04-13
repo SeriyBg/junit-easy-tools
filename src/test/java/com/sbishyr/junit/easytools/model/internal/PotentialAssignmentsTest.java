@@ -61,10 +61,7 @@ public class PotentialAssignmentsTest {
         assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
         List<AssignmentObject> assignmentObjects = assignments.allPossible();
 
-        ArrayList<ParameterSignature> parameterSignature =
-                ParameterSignature.signatures(AssignmentsFromField.class.getMethod("a", String.class));
-
         AssignmentObject assignmentObject = assignmentObjects.get(0);
-        assertThat(assignmentObject.produceParamValue()).isEqualTo("value");
+        assertThat(assignmentObject.parameterProducer().produceParamValue()).isEqualTo("value");
     }
 }

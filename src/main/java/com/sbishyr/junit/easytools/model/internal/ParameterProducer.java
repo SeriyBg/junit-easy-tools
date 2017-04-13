@@ -1,7 +1,5 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import org.junit.runners.model.FrameworkField;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +11,8 @@ import java.util.function.*;
 class ParameterProducer {
 
 
-    private final FrameworkField field;
+    private final Class<?> type;
+    private final Object dataProducer;
 
     private static final Map<Class<?>, Function<Object, Object>> classToProducer = createClassToProducer();
 
@@ -27,15 +26,12 @@ class ParameterProducer {
         return Collections.unmodifiableMap(map);
     }
 
-    ParameterProducer(FrameworkField field) {
-        this.field = field;
+    ParameterProducer(Class<?> type, Object dataProducer) {
+        this.type = type;
+        this.dataProducer = dataProducer;
     }
 
     Object produceParamValue() {
-        try {
-            return classToProducer.get(field.getType()).apply(field.get(null));
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return classToProducer.get(type).apply(dataProducer);
     }
 }
