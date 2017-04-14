@@ -18,7 +18,7 @@ import java.util.function.LongSupplier;
 /**
  * @author Serge Bishyr
  */
-class FieldAssignmentObject implements AssignmentObject {
+class FieldAssignment implements Assignment {
 
     private static final Map<Class<?>, Class<?>> primitiveSupplierToType = createPrimitiveSuppliers();
 
@@ -33,7 +33,7 @@ class FieldAssignmentObject implements AssignmentObject {
 
     private final FrameworkField field;
 
-    FieldAssignmentObject(FrameworkField field) {
+    FieldAssignment(FrameworkField field) {
         this.field = field;
     }
 

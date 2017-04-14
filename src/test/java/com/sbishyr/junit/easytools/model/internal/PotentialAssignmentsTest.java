@@ -34,36 +34,36 @@ public class PotentialAssignmentsTest {
     }
 
     @Test
-    public void shouldHaveAssignmentsFromField() throws Exception {
-        assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<AssignmentObject> assignmentObjects = assignments.allPossible();
-        assertThat(assignmentObjects).hasSize(1);
+    public void shouldHaveAssignmentsFromField() throws Throwable {
+        this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
+        List<Assignment> assignments = this.assignments.allPossible();
+        assertThat(assignments).hasSize(1);
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromField.class.getMethod("a", String.class));
 
-        AssignmentObject assignmentObject = assignmentObjects.get(0);
-        assertThat(assignmentObject.isValidFor(parameterSignature.get(0))).isTrue();
+        Assignment assignment = assignments.get(0);
+        assertThat(assignment.isValidFor(parameterSignature.get(0))).isTrue();
     }
 
     @Test
-    public void shouldNotBeValidIfTypeDoesNotMatch() throws Exception {
-        assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<AssignmentObject> assignmentObjects = assignments.allPossible();
+    public void shouldNotBeValidIfTypeDoesNotMatch() throws Throwable {
+        this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
+        List<Assignment> assignments = this.assignments.allPossible();
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromField.class.getMethod("b", Integer.TYPE));
-        AssignmentObject assignmentObject = assignmentObjects.get(0);
-        assertThat(assignmentObject.isValidFor(parameterSignature.get(0))).isFalse();
+        Assignment assignment = assignments.get(0);
+        assertThat(assignment.isValidFor(parameterSignature.get(0))).isFalse();
     }
 
     @Test
-    public void shouldProduceValueFromProducer() throws Exception {
-        assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<AssignmentObject> assignmentObjects = assignments.allPossible();
+    public void shouldProduceValueFromProducer() throws Throwable {
+        this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
+        List<Assignment> assignments = this.assignments.allPossible();
 
-        AssignmentObject assignmentObject = assignmentObjects.get(0);
-        assertThat(assignmentObject.parameterProducer().produceParamValue()).isEqualTo("value");
+        Assignment assignment = assignments.get(0);
+        assertThat(assignment.parameterProducer().produceParamValue()).isEqualTo("value");
     }
 
     public static class AssignmentsFromMethod {
@@ -81,19 +81,19 @@ public class PotentialAssignmentsTest {
     }
 
     @Test
-    public void shouldFindPossibleAssignmentsFromMethod() throws Exception {
-        assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
-        final List<AssignmentObject> assignmentObjects = assignments.allPossible();
+    public void shouldFindPossibleAssignmentsFromMethod() throws Throwable {
+        this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
+        final List<Assignment> assignments = this.assignments.allPossible();
 
-        assertThat(assignmentObjects).hasSize(2);
+        assertThat(assignments).hasSize(2);
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromMethod.class.getMethod("a", String.class));
 
-        assertThat(assignmentObjects.get(0).isValidFor(parameterSignature.get(0)));
-        assertThat(assignmentObjects.get(0).parameterProducer().produceParamValue()).isEqualTo("42");
+        assertThat(assignments.get(0).isValidFor(parameterSignature.get(0)));
+        assertThat(assignments.get(0).parameterProducer().produceParamValue()).isEqualTo("42");
 
-        assertThat(assignmentObjects.get(1).isValidFor(parameterSignature.get(0)));
-        assertThat(assignmentObjects.get(1).parameterProducer().produceParamValue()).isEqualTo("27");
+        assertThat(assignments.get(1).isValidFor(parameterSignature.get(0)));
+        assertThat(assignments.get(1).parameterProducer().produceParamValue()).isEqualTo("27");
     }
 }

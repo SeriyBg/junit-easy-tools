@@ -53,7 +53,7 @@ public class ProducerAssignmentsMultipleParametersTest {
     }
 
     @Test
-    public void shouldGetPotentialForNextOfTheGivenType() throws Exception {
+    public void shouldGetPotentialForNextOfTheGivenType() throws Throwable {
         List<ParameterProducer> stringParameterProducer = assignments.potentialNextParameterProducers();
         assertThat(stringParameterProducer).hasSize(1);
         assertThat(stringParameterProducer.get(0).produceParamValue()).isEqualTo("42");
@@ -70,7 +70,7 @@ public class ProducerAssignmentsMultipleParametersTest {
     }
 
     @Test
-    public void shouldAssignNamedProducer() throws Exception {
+    public void shouldAssignNamedProducer() throws Throwable {
         TestClass testClass = new TestClass(ClassWithNamedProducer.class);
         assignments = ProducerAssignments.allUnassigned(
                 testClass, testClass.getJavaClass().getMethod("a", String.class));

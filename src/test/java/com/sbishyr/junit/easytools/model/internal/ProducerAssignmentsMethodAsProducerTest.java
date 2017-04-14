@@ -30,7 +30,7 @@ public class ProducerAssignmentsMethodAsProducerTest {
     }
 
     @Test
-    public void shouldSupportMethodDataProducer() throws Exception {
+    public void shouldSupportMethodDataProducer() throws Throwable {
         TestClass testClass = new TestClass(ClassWithMethodProducer.class);
         ProducerAssignments assignments = ProducerAssignments.allUnassigned(
                 testClass, testClass.getJavaClass().getMethod("a", String.class));

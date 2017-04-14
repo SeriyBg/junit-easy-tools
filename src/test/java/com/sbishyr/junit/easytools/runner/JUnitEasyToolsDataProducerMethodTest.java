@@ -6,7 +6,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -23,7 +23,7 @@ public class JUnitEasyToolsDataProducerMethodTest {
 
         @DataProducer
         public static List<Supplier<String>> dataProducer() {
-            return Arrays.asList(
+            return Collections.singletonList(
                     () -> "return"
             );
         }

@@ -5,7 +5,7 @@ import org.junit.experimental.theories.ParameterSignature;
 /**
  * @author Serge Bishyr
  */
-interface AssignmentObject {
+interface Assignment {
 
     boolean isValidFor(ParameterSignature parameterSignature);
 
