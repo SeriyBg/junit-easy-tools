@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,7 +23,7 @@ class PotentialAssignments {
         this.testClass = testClass;
     }
 
-    List<Assignment> allPossible() throws Throwable {
+    Stream<Assignment> allPossible() throws Throwable {
         final List<FrameworkField> annotatedFields = testClass.getAnnotatedFields(DataProducer.class);
         final List<FrameworkMethod> annotatedMethods = testClass.getAnnotatedMethods(DataProducer.class);
 
@@ -37,21 +36,22 @@ class PotentialAssignments {
                 .map(array -> array[0])
                 .orElse(null);
 
-        final Stream<Assignment> methodAssignments = annotatedMethods.stream()
-                .flatMap(PotentialAssignments::flatMapToCollection)
-                .map(value -> new ObjectAssignment(value, methodReturnType));
+        Stream<Assignment> methodAssignments = Stream.empty();
+        for (FrameworkMethod annotatedMethod : annotatedMethods) {
+            methodAssignments = Stream.concat(methodAssignments, methodToStreamOfResults(annotatedMethod)
+                    .map(value -> new MethodResultAssignment(value, methodReturnType, annotatedMethod)));
+        }
 
         final Stream<Assignment> fieldsAssignments = annotatedFields.stream()
                 .map(FieldAssignment::new);
-        return Stream.concat(fieldsAssignments, methodAssignments).collect(Collectors.toList());
+        return Stream.concat(fieldsAssignments, methodAssignments);
     }
 
-    private static Stream<?> flatMapToCollection(FrameworkMethod annotatedMethod) {
+    private static Stream<?> methodToStreamOfResults(FrameworkMethod annotatedMethod) {
         try {
             return ((Collection<?>) annotatedMethod.invokeExplosively(null)).stream();
         } catch (Throwable throwable) {
             throw new IllegalArgumentException(throwable);
         }
     }
-
 }

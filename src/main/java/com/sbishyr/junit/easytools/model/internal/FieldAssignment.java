@@ -1,11 +1,10 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import com.sbishyr.junit.easytools.model.annotation.DataProducer;
 import com.sbishyr.junit.easytools.model.annotation.ProducedValue;
 import org.junit.experimental.theories.ParameterSignature;
 import org.junit.runners.model.FrameworkField;
 
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +17,7 @@ import java.util.function.LongSupplier;
 /**
  * @author Serge Bishyr
  */
-class FieldAssignment implements Assignment {
+class FieldAssignment extends BasicAssignment<Field> {
 
     private static final Map<Class<?>, Class<?>> primitiveSupplierToType = createPrimitiveSuppliers();
 
@@ -34,6 +33,7 @@ class FieldAssignment implements Assignment {
     private final FrameworkField field;
 
     FieldAssignment(FrameworkField field) {
+        super(field.getField());
         this.field = field;
     }
 
@@ -48,16 +48,8 @@ class FieldAssignment implements Assignment {
             return true;
         } else {
             Type genericType = field.getField().getGenericType();
-            if (genericType instanceof ParameterizedType) {
-                ParameterizedType parametrizedType = (ParameterizedType) genericType;
-                Type[] actualTypeArguments = parametrizedType.getActualTypeArguments();
-                Type actualTypeArgument = actualTypeArguments[0];
-                if (parameterSignature.getType().equals(actualTypeArgument)) {
-                    return true;
-                }
-            }
+            return isValidGenericType(parameterSignature, genericType);
         }
-        return false;
     }
 
     @Override
@@ -67,14 +59,5 @@ class FieldAssignment implements Assignment {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    private boolean isProducerNameValid(ProducedValue paramAnnotation) {
-        if (paramAnnotation == null) {
-            return true;
-        }
-        DataProducer annotation = field.getAnnotation(DataProducer.class);
-        String dataProducerName = annotation.name().isEmpty() ? field.getName() : annotation.name();
-        return paramAnnotation.producer().equals(dataProducerName);
     }
 }

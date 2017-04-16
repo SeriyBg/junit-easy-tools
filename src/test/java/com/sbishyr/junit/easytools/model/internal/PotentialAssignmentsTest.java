@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +37,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldHaveAssignmentsFromField() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<Assignment> assignments = this.assignments.allPossible();
+        List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());
         assertThat(assignments).hasSize(1);
 
         ArrayList<ParameterSignature> parameterSignature =
@@ -49,7 +50,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldNotBeValidIfTypeDoesNotMatch() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<Assignment> assignments = this.assignments.allPossible();
+        List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromField.class.getMethod("b", Integer.TYPE));
@@ -60,7 +61,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldProduceValueFromProducer() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<Assignment> assignments = this.assignments.allPossible();
+        List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
 
         Assignment assignment = assignments.get(0);
         assertThat(assignment.parameterProducer().produceParamValue()).isEqualTo("value");
@@ -83,7 +84,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldFindPossibleAssignmentsFromMethod() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
-        final List<Assignment> assignments = this.assignments.allPossible();
+        final List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
 
         assertThat(assignments).hasSize(2);
 

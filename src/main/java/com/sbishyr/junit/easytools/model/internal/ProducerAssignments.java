@@ -39,7 +39,6 @@ class ProducerAssignments {
     List<ParameterProducer> potentialNextParameterProducers() throws Throwable {
         ParameterSignature next = nextUnassigned();
         return new PotentialAssignments(testClass).allPossible()
-                .stream()
                 .filter(assignment -> assignment.isValidFor(next))
                 .map(Assignment::parameterProducer)
                 .collect(Collectors.toList());
