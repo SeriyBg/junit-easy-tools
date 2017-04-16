@@ -1,7 +1,6 @@
 package com.sbishyr.junit.easytools.model.internal;
 
-import org.junit.runners.model.FrameworkField;
-
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,12 +12,13 @@ import java.util.function.*;
 class ParameterProducer {
 
 
-    private final FrameworkField field;
+    private final Type type;
+    private final Object dataProducer;
 
-    private static final Map<Class<?>, Function<Object, Object>> classToProducer = createClassToProducer();
+    private static final Map<Type, Function<Object, Object>> classToProducer = createClassToProducer();
 
-    private static Map<Class<?>, Function<Object, Object>> createClassToProducer() {
-        Map<Class<?>, Function<Object, Object>> map = new HashMap<>();
+    private static Map<Type, Function<Object, Object>> createClassToProducer() {
+        Map<Type, Function<Object, Object>> map = new HashMap<>();
         map.put(Supplier.class, s -> ((Supplier<?>)s).get());
         map.put(IntSupplier.class, s -> ((IntSupplier)s).getAsInt());
         map.put(LongSupplier.class, s -> ((LongSupplier)s).getAsLong());
@@ -27,11 +27,12 @@ class ParameterProducer {
         return Collections.unmodifiableMap(map);
     }
 
-    ParameterProducer(FrameworkField field) {
-        this.field = field;
+    ParameterProducer(Type type, Object dataProducer) {
+        this.type = type;
+        this.dataProducer = dataProducer;
     }
 
-    Object produceParamValue() throws IllegalAccessException {
-        return classToProducer.get(field.getType()).apply(field.get(null));
+    Object produceParamValue() {
+        return classToProducer.get(type).apply(dataProducer);
     }
 }

@@ -40,14 +40,14 @@ public class ProducerAssignmentsOneParameterTest {
     }
 
     @Test
-    public void shouldGetNextPotentialParameterProducer() throws Exception {
+    public void shouldGetNextPotentialParameterProducer() throws Throwable {
         List<ParameterProducer> parameterProducers = assignments.potentialNextParameterProducers();
         assertThat(parameterProducers).hasSize(1);
         assertThat(parameterProducers.get(0).produceParamValue()).isEqualTo("42");
     }
 
     @Test
-    public void shouldGetNewAssignmentOnAssignNext() throws Exception {
+    public void shouldGetNewAssignmentOnAssignNext() throws Throwable {
         List<ParameterProducer> parameterProducers = assignments.potentialNextParameterProducers();
         ProducerAssignments newAssignments = assignments.assignNext(parameterProducers.get(0));
         assertThat(newAssignments.isComplete()).isTrue();
