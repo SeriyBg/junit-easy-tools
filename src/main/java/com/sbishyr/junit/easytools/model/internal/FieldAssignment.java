@@ -53,11 +53,7 @@ class FieldAssignment extends BasicAssignment<Field> {
     }
 
     @Override
-    public ParameterProducer parameterProducer() {
-        try {
-            return new ParameterProducer(field.getType(), field.get(null));
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
+    ParameterProducer createParameterProducer() throws IllegalAccessException {
+        return new ParameterProducer(field.getType(), field.get(null));
     }
 }

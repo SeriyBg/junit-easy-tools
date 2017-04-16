@@ -14,11 +14,22 @@ import java.lang.reflect.Type;
  */
 abstract class BasicAssignment<T extends AccessibleObject & Member> implements Assignment {
 
-    private final T accessibleObject;
+    private final T assignmentProducer;
 
-    BasicAssignment(T accessibleObject) {
-        this.accessibleObject = accessibleObject;
+    BasicAssignment(T assignmentProducer) {
+        this.assignmentProducer = assignmentProducer;
     }
+
+    @Override
+    public ParameterProducer parameterProducer() {
+        try {
+            return createParameterProducer();
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    abstract ParameterProducer createParameterProducer() throws IllegalAccessException;
 
     boolean isValidGenericType(ParameterSignature parameterSignature, Type genericType) {
         if (genericType instanceof ParameterizedType) {
@@ -32,13 +43,12 @@ abstract class BasicAssignment<T extends AccessibleObject & Member> implements A
         return false;
     }
 
-
     boolean isProducerNameValid(ProducedValue paramAnnotation) {
         if (paramAnnotation == null) {
             return true;
         }
-        DataProducer annotation = accessibleObject.getAnnotation(DataProducer.class);
-        String dataProducerName = annotation.name().isEmpty() ? accessibleObject.getName() : annotation.name();
+        DataProducer annotation = assignmentProducer.getAnnotation(DataProducer.class);
+        String dataProducerName = annotation.name().isEmpty() ? assignmentProducer.getName() : annotation.name();
         return paramAnnotation.producer().equals(dataProducerName);
     }
 }

@@ -29,7 +29,7 @@ class MethodResultAssignment extends BasicAssignment<Method> {
     }
 
     @Override
-    public ParameterProducer parameterProducer() {
+    ParameterProducer createParameterProducer() throws IllegalAccessException {
         return new ParameterProducer(((ParameterizedType)type).getRawType(), value);
     }
 }
