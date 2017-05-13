@@ -1,7 +1,6 @@
 package com.github.seriybg.junit.easytools.model.internal;
 
 import com.github.seriybg.junit.easytools.model.annotation.DataProducer;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.experimental.theories.ParameterSignature;
 import org.junit.runners.model.TestClass;
@@ -39,7 +38,7 @@ public class PotentialAssignmentsTest {
     public void shouldHaveAssignmentsFromField() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
         List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());
-        Assertions.assertThat(assignments).hasSize(1);
+        assertThat(assignments).hasSize(1);
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromField.class.getMethod("a", String.class));
@@ -87,7 +86,7 @@ public class PotentialAssignmentsTest {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
         final List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
 
-        Assertions.assertThat(assignments).hasSize(2);
+        assertThat(assignments).hasSize(2);
 
         ArrayList<ParameterSignature> parameterSignature =
                 ParameterSignature.signatures(AssignmentsFromMethod.class.getMethod("a", String.class));

@@ -1,7 +1,6 @@
 package com.github.seriybg.junit.easytools.model.internal;
 
 import com.github.seriybg.junit.easytools.model.annotation.DataProducer;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.TestClass;
@@ -51,7 +50,7 @@ public class ProducerAssignmentsMethodAsProducerTest {
                 testClass, testClass.getJavaClass().getMethod("a", String.class));
 
         List<ParameterProducer> parameterProducers = assignments.potentialNextParameterProducers();
-        Assertions.assertThat(parameterProducers).hasSize(1);
+        assertThat(parameterProducers).hasSize(1);
         assertThat(parameterProducers.get(0).produceParamValue()).isEqualTo("return");
     }
 
