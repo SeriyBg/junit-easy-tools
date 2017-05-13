@@ -4,10 +4,32 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sbishyr.junit.easytools</groupId>
+    <groupId>com.github.seriybg</groupId>
     <artifactId>junit-easytools</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
+    <url>https://github.com/SeriyBg/junit-easy-tools</url>
 
+    <issueManagement>
+        <url>https://github.com/SeriyBg/junit-easy-tools/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <email>seriybg@gmail.com</email>
+            <name>Serge Bishyr</name>
+            <url>https://github.com/SeriyBg</url>
+            <id>SeriyBg</id>
+        </developer>
+    </developers>
 
     <dependencies>
 
