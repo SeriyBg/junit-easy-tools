@@ -1,3 +1,4 @@
+[![Download](https://api.bintray.com/packages/seriybg/seriybg-main/junit-easy-tools/images/download.svg)](https://bintray.com/seriybg/seriybg-main/junit-easy-tools/_latestVersion)
 [![Build Status](https://travis-ci.org/SeriyBg/junit-easy-tools.svg?branch=master)](https://travis-ci.org/SeriyBg/junit-easy-tools)
 [![codecov](https://codecov.io/gh/SeriyBg/junit-easy-tools/branch/master/graph/badge.svg)](https://codecov.io/gh/SeriyBg/junit-easy-tools)
 [![Dependency Status](https://www.versioneye.com/user/projects/58bbf75f2ff683004468cc9f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58bbf75f2ff683004468cc9f)
