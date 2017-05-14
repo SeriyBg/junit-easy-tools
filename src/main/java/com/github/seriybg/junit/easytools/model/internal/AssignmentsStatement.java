@@ -1,5 +1,6 @@
 package com.github.seriybg.junit.easytools.model.internal;
 
+import org.junit.AssumptionViolatedException;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -73,7 +74,11 @@ class AssignmentsStatement extends Statement {
                 return new Statement() {
                     @Override
                     public void evaluate() throws Throwable {
-                        method.invokeExplosively(test, params);
+                        try {
+                            method.invokeExplosively(test, params);
+                        } catch (AssumptionViolatedException e) {
+                            //ignore for now
+                        }
                     }
                 };
             }
