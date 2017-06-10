@@ -1,6 +1,7 @@
 package com.github.seriybg.junit.easytools.model.internal;
 
 import com.github.seriybg.junit.easytools.model.annotation.ProducedValues;
+import org.junit.AssumptionViolatedException;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
@@ -24,7 +25,11 @@ public class ProducerStatement extends Statement {
         ProducerAssignments assignments = ProducerAssignments.allUnassigned(testClass, method.getMethod());
         int iterations = marker == null ? 1 : marker.iterations();
         for (int i = 0; i < iterations; i++) {
-            new AssignmentsStatement(testClass.getJavaClass(), method, assignments, i).evaluate();
+            try {
+                new AssignmentsStatement(testClass.getJavaClass(), method, assignments, i).evaluate();
+            } catch (AssumptionViolatedException e) {
+                //ignore for now
+            }
         }
     }
 }
