@@ -61,7 +61,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldProduceValueFromProducer() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromField.class));
-        List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
+        List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());
 
         Assignment assignment = assignments.get(0);
         assertThat(assignment.parameterProducer().produceParamValue()).isEqualTo("value");
@@ -84,7 +84,7 @@ public class PotentialAssignmentsTest {
     @Test
     public void shouldFindPossibleAssignmentsFromMethod() throws Throwable {
         this.assignments = new PotentialAssignments(new TestClass(AssignmentsFromMethod.class));
-        final List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());;
+        final List<Assignment> assignments = this.assignments.allPossible().collect(Collectors.toList());
 
         assertThat(assignments).hasSize(2);
 
