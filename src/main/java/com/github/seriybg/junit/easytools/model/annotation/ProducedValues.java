@@ -11,4 +11,6 @@ public @interface ProducedValues {
     int iterations() default 1;
 
     String name() default "";
+
+    boolean nullsAccepted() default true;
 }

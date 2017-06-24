@@ -9,4 +9,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProducedValue {
     String producer();
+
+    boolean nullsAccepted() default true;
 }
