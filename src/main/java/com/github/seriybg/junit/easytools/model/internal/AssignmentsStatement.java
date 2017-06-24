@@ -1,11 +1,15 @@
 package com.github.seriybg.junit.easytools.model.internal;
 
+import com.github.seriybg.junit.easytools.model.annotation.ProducedValues;
+import org.junit.AssumptionViolatedException;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Serge Bishyr
@@ -73,6 +77,7 @@ class AssignmentsStatement extends Statement {
                 return new Statement() {
                     @Override
                     public void evaluate() throws Throwable {
+                        validateParams();
                         method.invokeExplosively(test, params);
                     }
                 };
@@ -91,6 +96,15 @@ class AssignmentsStatement extends Statement {
             @Override
             protected Object createTest() throws Exception {
                 return new TestObject(getTestClass()).createTestObject();
+            }
+
+            private void validateParams() {
+                final ProducedValues marker = method.getAnnotation(ProducedValues.class);
+                if (marker != null
+                        && !marker.nullsAccepted() && Arrays.stream(params).anyMatch(Objects::isNull)) {
+                    throw new AssumptionViolatedException(
+                            "Nulls not allowed as parameter for test method: " + method.getName());
+                }
             }
 
         }.methodBlock(method).evaluate();

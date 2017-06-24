@@ -21,7 +21,7 @@ public class JUnitEasyToolsNullValuesTest {
     private static final Queue<String> valuesWithNulls = new LinkedList<>();
 
     @DataProducer
-    public static Supplier<String> producerWithNulls = () -> valuesWithNulls.poll();
+    public static Supplier<String> producerWithNulls = valuesWithNulls::poll;
 
     @Before
     public void fillValues() throws Exception {
